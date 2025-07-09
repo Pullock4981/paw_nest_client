@@ -75,7 +75,7 @@ const LogIn = () => {
                             <a href="#" className="text-sm text-red-500 hover:underline">Forgot password?</a>
                         </div>
 
-                        <button type="submit" className="btn btn-block bg-white text-[#8A4771] font-bold border border-[#8A4771] hover:bg-[#8A4771] hover:text-white transition duration-200">
+                        <button type="submit" className="btn btn-block bg-white text-[#865B97] font-bold border border-[#8A4771] hover:bg-[#865B97] hover:text-white transition duration-200">
                             Log In
                         </button>
 
