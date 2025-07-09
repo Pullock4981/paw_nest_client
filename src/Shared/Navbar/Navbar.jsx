@@ -87,7 +87,7 @@ const Navbar = () => {
                         {isDropdownOpen && (
                             <div className="absolute right-0 top-12 bg-base-100 shadow-md rounded w-40 z-50">
                                 <ul className="text-sm">
-                                    <li><Link to="/dashboard" className="block px-4 py-2 hover:bg-base-200" onClick={() => setIsDropdownOpen(false)}>Dashboard</Link></li>
+                                    <li><Link to="/userDashboard" className="block px-4 py-2 hover:bg-base-200" onClick={() => setIsDropdownOpen(false)}>Dashboard</Link></li>
                                     <li><button onClick={handleSignOut} className="w-full text-left px-4 py-2 hover:bg-base-200">Logout</button></li>
                                 </ul>
                             </div>

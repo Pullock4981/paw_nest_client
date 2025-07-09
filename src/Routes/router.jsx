@@ -8,6 +8,13 @@ import PetListing from '../Pages/PetListing/PetListing';
 import PetDetails from '../Pages/PetDetails/PetDetails';
 import DonationCampaign from '../Pages/DonationCampaign/DonationCampaign';
 import DonationDetails from '../Pages/DonationDetails/DonationDetails';
+import UserDashBoardLayout from '../Layouts/UserDashBoardLayout';
+import AddPet from '../components/UserComponents/AddPet';
+import MyAddedPet from '../components/UserComponents/MyAddedPet';
+import AdoptionReq from '../components/UserComponents/AdoptionReq';
+import CreateCampaign from '../components/UserComponents/CreateCampaign';
+import MyCampaign from '../components/UserComponents/MyCampaign';
+import MyDonation from '../components/UserComponents/MyDonation';
 
 const router = createBrowserRouter([
     {
@@ -44,6 +51,18 @@ const router = createBrowserRouter([
             },
         ]
     },
+    {
+        path: "/userDashboard",
+        Component: UserDashBoardLayout,
+        children: [
+            { path: "addPet", Component: AddPet },
+            { path: "myPets", Component: MyAddedPet },
+            { path: "adoptionRequests", Component: AdoptionReq },
+            { path: "createCampaign", Component: CreateCampaign },
+            { path: "myCampaigns", Component: MyCampaign },
+            { path: "myDonations", Component: MyDonation }
+        ]
+    }
 ]);
 
 export default router;
