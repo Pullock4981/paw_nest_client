@@ -93,21 +93,21 @@ const MyAddedPet = () => {
                 <div className="flex gap-2">
                     <Link to={`/userDashboard/updatePet/${row.original._id}`}>
                         <button
-                            className="bg-blue-500 text-white px-3 py-1 rounded text-sm"
+                            className="bg-blue-500 text-white px-3 py-1 cursor-pointer rounded text-sm"
                         >
                             Update
                         </button>
                     </Link>
                     <button
                         onClick={() => handleDelete(row.original._id)}
-                        className="bg-red-500 text-white px-3 py-1 rounded text-sm"
+                        className="bg-red-500 text-white px-3 py-1 cursor-pointer rounded text-sm"
                     >
                         Delete
                     </button>
                     {!row.original.adopted && (
                         <button
                             onClick={() => handleAdopt(row.original._id)}
-                            className="bg-green-500 text-white px-3 py-1 rounded text-sm"
+                            className="bg-green-500 text-white px-3 py-1 cursor-pointer rounded text-sm"
                         >
                             Adopted
                         </button>
