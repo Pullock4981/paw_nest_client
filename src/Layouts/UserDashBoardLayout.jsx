@@ -1,9 +1,7 @@
 import React from 'react';
-// import { Link, NavLink, Outlet } from 'react-router-dom';
 import { FaPaw, FaPlusCircle, FaClipboardList, FaHandHoldingHeart, FaDonate, FaHeart } from 'react-icons/fa';
 import { Link, NavLink, Outlet } from 'react-router';
 import Logo from '../components/Logo/Logo';
-// import "./DashBoard.css"
 
 const UserDashBoardLayout = () => {
     return (
