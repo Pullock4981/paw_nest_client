@@ -49,7 +49,7 @@ const router = createBrowserRouter([
                 Component: DonationCampaign
             },
             {
-                path: "/donationDetails",
+                path: "/donationDetails/:id",
                 Component: DonationDetails
             },
         ]

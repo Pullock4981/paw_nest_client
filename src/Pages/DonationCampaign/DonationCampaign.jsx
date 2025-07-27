@@ -88,7 +88,7 @@ const DonationCampaign = () => {
                                 {progress}% funded
                             </p>
                             <button
-                                onClick={() => navigate(`/donationCampain/${campaign._id}`)}
+                                onClick={() => navigate(`/donationDetails/${campaign._id}`)}
                                 className="mt-auto bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700"
                             >
                                 View Details
