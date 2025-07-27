@@ -41,7 +41,7 @@ const router = createBrowserRouter([
                 Component: PetListing
             },
             {
-                path: "/petDetails",
+                path: "/petDetails/:id",
                 Component: PetDetails
             },
             {

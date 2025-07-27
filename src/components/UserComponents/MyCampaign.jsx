@@ -39,7 +39,7 @@ const MyCampaign = () => {
     };
 
     const handleEdit = (id) => {
-        navigate(`/userDashboard/updateCampaign/${id}`); // ✅ fixed route path
+        navigate(`/userDashboard/editCampaign/${id}`); // ✅ fixed route path
     };
 
     const handleViewDonators = (donators = []) => {

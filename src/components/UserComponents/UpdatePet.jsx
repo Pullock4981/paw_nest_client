@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from "react";
-// import { useParams, useNavigate } from "react-router-dom";
+import React, { useEffect, useState, useContext } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import Select from "react-select";
 import Swal from "sweetalert2";
-import { Link, useNavigate, useParams } from "react-router";
+import { useNavigate, useParams } from "react-router";
+import { AuthContext } from "../../Context/AuthContext";
 
 const petCategories = [
     { value: "dog", label: "Dog" },
@@ -14,10 +14,11 @@ const petCategories = [
     { value: "other", label: "Other" },
 ];
 
+// ✅ Validation Schema (same as AddPet)
 const validationSchema = Yup.object({
     name: Yup.string().required("Name is required"),
     age: Yup.string().required("Age is required"),
-    category: Yup.object().required("Category is required"),
+    category: Yup.string().required("Category is required"),
     location: Yup.string().required("Location is required"),
     shortDescription: Yup.string().required("Short description is required"),
     longDescription: Yup.string().required("Long description is required"),
@@ -25,63 +26,73 @@ const validationSchema = Yup.object({
 
 const UpdatePet = () => {
     const { id } = useParams();
-    const [petData, setPetData] = useState(null);
+    const { user } = useContext(AuthContext);
+    const [initialValues, setInitialValues] = useState(null);
     const navigate = useNavigate();
 
+    // 🔁 Fetch pet by ID
     useEffect(() => {
-        fetch(`http://localhost:5000/pets/${id}`)
-            .then((res) => res.json())
-            .then((data) => {
-                setPetData({
+        const fetchPet = async () => {
+            try {
+                const res = await fetch(`http://localhost:5000/pets/${id}`);
+                const data = await res.json();
+
+                setInitialValues({
                     name: data.name,
                     age: data.age,
-                    category: petCategories.find((cat) => cat.value === data.category),
+                    category: data.category,
                     location: data.location,
                     shortDescription: data.shortDescription,
                     longDescription: data.longDescription,
                 });
-            })
-            .catch((err) => {
-                console.error("Failed to fetch pet data:", err);
-                Swal.fire("Error", "Failed to load pet data", "error");
-            });
+            } catch (err) {
+                console.error("Failed to fetch pet:", err);
+                Swal.fire("Error", "Could not load pet data.", "error");
+            }
+        };
+
+        fetchPet();
     }, [id]);
 
-    const handleSubmit = (values) => {
-        fetch(`http://localhost:5000/pets/${id}`, {
-            method: "PUT",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-                ...values,
-                category: values.category.value,
-            }),
-        })
-            .then((res) => res.json())
-            .then(() => {
-                Swal.fire("Updated!", "Pet details updated successfully.", "success");
-                navigate("/userDashboard/myPets");
-            })
-            .catch((err) => {
-                console.error("Update failed:", err);
-                Swal.fire("Error", "Failed to update pet", "error");
+    // 🧠 Submit handler
+    const handleSubmit = async (values) => {
+        try {
+            const res = await fetch(`http://localhost:5000/pets/${id}`, {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    ...values,
+                    category: values.category,
+                    userEmail: user?.email || "unknown",
+                }),
             });
+
+            if (!res.ok) throw new Error("Update failed");
+
+            Swal.fire("Success!", "Pet updated successfully.", "success");
+            navigate("/userDashboard/myPets");
+        } catch (err) {
+            console.error("Error updating pet:", err);
+            Swal.fire("Error", "Could not update pet.", "error");
+        }
     };
 
-    if (!petData) return <p className="text-center mt-10">Loading pet details...</p>;
+    // ⏳ Loading State
+    if (!initialValues) return <p className="text-center mt-10">Loading pet data...</p>;
 
     return (
         <div className="max-w-5xl mx-auto p-6 bg-white shadow rounded">
             <h2 className="text-2xl font-bold mb-6">Update Pet</h2>
+
             <Formik
-                initialValues={petData}
+                initialValues={initialValues}
                 validationSchema={validationSchema}
                 enableReinitialize
                 onSubmit={handleSubmit}
             >
-                {({ setFieldValue, errors, touched, values }) => (
+                {({ setFieldValue, values, errors, touched }) => (
                     <Form className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        {/* Name */}
                         <div>
                             <label className="block font-semibold">Pet Name</label>
                             <Field
@@ -92,6 +103,7 @@ const UpdatePet = () => {
                             <ErrorMessage name="name" component="div" className="text-red-500 text-sm" />
                         </div>
 
+                        {/* Age */}
                         <div>
                             <label className="block font-semibold">Pet Age</label>
                             <Field
@@ -102,13 +114,14 @@ const UpdatePet = () => {
                             <ErrorMessage name="age" component="div" className="text-red-500 text-sm" />
                         </div>
 
+                        {/* Category */}
                         <div>
                             <label className="block font-semibold">Category</label>
                             <Select
                                 options={petCategories}
                                 name="category"
-                                value={values.category}
-                                onChange={(option) => setFieldValue("category", option)}
+                                value={petCategories.find((cat) => cat.value === values.category)}
+                                onChange={(option) => setFieldValue("category", option.value)}
                                 className="mt-2"
                             />
                             {errors.category && touched.category && (
@@ -116,6 +129,7 @@ const UpdatePet = () => {
                             )}
                         </div>
 
+                        {/* Location */}
                         <div>
                             <label className="block font-semibold">Location</label>
                             <Field
@@ -126,6 +140,7 @@ const UpdatePet = () => {
                             <ErrorMessage name="location" component="div" className="text-red-500 text-sm" />
                         </div>
 
+                        {/* Short Description */}
                         <div className="md:col-span-2">
                             <label className="block font-semibold">Short Description</label>
                             <Field
@@ -140,6 +155,7 @@ const UpdatePet = () => {
                             />
                         </div>
 
+                        {/* Long Description */}
                         <div className="md:col-span-2">
                             <label className="block font-semibold">Long Description</label>
                             <Field
@@ -156,6 +172,7 @@ const UpdatePet = () => {
                             />
                         </div>
 
+                        {/* Submit */}
                         <div className="md:col-span-2 text-right">
                             <button
                                 type="submit"
@@ -164,7 +181,6 @@ const UpdatePet = () => {
                                 Update Pet
                             </button>
                         </div>
-
                     </Form>
                 )}
             </Formik>

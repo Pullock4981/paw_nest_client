@@ -1,18 +1,16 @@
-// import React, { useEffect, useState } from 'react';
-// import axios from 'axios';
-// import Swal from 'sweetalert2';
-// import { useParams, useNavigate } from 'react-router-dom';
-
-import axios from "axios";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
+import { AuthContext } from "../../Context/AuthContext";
 import { useNavigate, useParams } from "react-router";
 import Swal from "sweetalert2";
+import axios from "axios";
 
 const EditCampaign = () => {
-    const { id } = useParams(); // campaign ID from URL
+    const { id } = useParams();
+    const { user } = useContext(AuthContext);
     const navigate = useNavigate();
-
+    const [loading, setLoading] = useState(true);
     const [formData, setFormData] = useState({
+        petName: '',
         maxDonation: '',
         lastDate: '',
         shortDescription: '',
@@ -20,41 +18,77 @@ const EditCampaign = () => {
     });
 
     useEffect(() => {
-        axios.get(`http://localhost:5000/campaigns/${id}`)
-            .then(res => {
-                const { maxDonation, lastDate, shortDescription, longDescription } = res.data;
-                setFormData({ maxDonation, lastDate, shortDescription, longDescription });
-            })
-            .catch(err => {
-                console.error(err);
-                Swal.fire('Error', 'Could not load campaign data', 'error');
-            });
+        const fetchCampaign = async () => {
+            try {
+                const res = await axios.get(`http://localhost:5000/campaigns/${id}`);
+                const data = res.data;
+                setFormData({
+                    petName: data.petName,
+                    maxDonation: data.maxDonation,
+                    lastDate: data.lastDate.split("T")[0], // Format date
+                    shortDescription: data.shortDescription,
+                    longDescription: data.longDescription
+                });
+            } catch (err) {
+                console.error("Error fetching campaign", err);
+                Swal.fire('Error', 'Could not load campaign', 'error');
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        if (id) fetchCampaign();
     }, [id]);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-        setFormData(prev => ({ ...prev, [name]: value }));
+        setFormData((prev) => ({ ...prev, [name]: value }));
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
 
+        const payload = {
+            ...formData,
+            maxDonation: parseFloat(formData.maxDonation),
+        };
+
         try {
-            const res = await axios.put(`http://localhost:5000/campaigns/${id}`, formData);
+            const res = await axios.put(`http://localhost:5000/campaigns/${id}`, payload);
             if (res.status === 200) {
-                Swal.fire('Success', 'Campaign updated!', 'success');
-                navigate('/my-donations');
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Updated!',
+                    text: 'Donation campaign updated successfully.',
+                    timer: 1500,
+                    showConfirmButton: false
+                }).then(() => {
+                    navigate('/userDashboard/myCampaigns');
+                });
             }
         } catch (err) {
             console.error(err);
-            Swal.fire('Error', 'Something went wrong', 'error');
+            Swal.fire('Error', 'Failed to update campaign', 'error');
         }
     };
+
+    if (loading) return <div className="text-center mt-10">Loading...</div>;
 
     return (
         <div className="max-w-3xl mx-auto p-6 bg-white shadow rounded mt-6">
             <h2 className="text-2xl font-bold mb-4">Edit Donation Campaign</h2>
             <form onSubmit={handleSubmit} className="space-y-4">
+                <div>
+                    <label className="block font-semibold">Pet Name</label>
+                    <input
+                        type="text"
+                        name="petName"
+                        value={formData.petName}
+                        onChange={handleChange}
+                        className="mt-2 block w-full border p-2 rounded"
+                        required
+                    />
+                </div>
                 <div>
                     <label className="block font-semibold">Max Donation Amount</label>
                     <input

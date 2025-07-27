@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
+import { useNavigate } from "react-router";
 
 const PetListing = () => {
     const [pets, setPets] = useState([]);
@@ -10,6 +11,7 @@ const PetListing = () => {
     const [loading, setLoading] = useState(false);
 
     const limit = 9; // number of pets per page
+    const navigate = useNavigate();
 
     // Fetch pets from server with filters, pagination
     const fetchPets = useCallback(async () => {
@@ -167,7 +169,7 @@ const PetListing = () => {
                                     cursor: "pointer",
                                     borderRadius: "4px",
                                 }}
-                                onClick={() => alert(`View details for ${pet.name}`)}
+                                onClick={() => navigate(`/petDetails/${pet._id}`)}
                             >
                                 View Details
                             </button>

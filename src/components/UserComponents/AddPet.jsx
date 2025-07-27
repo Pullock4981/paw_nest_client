@@ -3,7 +3,7 @@ import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import Select from "react-select";
 import Swal from "sweetalert2";
-import { AuthContext } from "../../Context/AuthContext"; // ✅ Import user context
+import { AuthContext } from "../../Context/AuthContext";
 
 const petCategories = [
     { value: "dog", label: "Dog" },
@@ -13,30 +13,31 @@ const petCategories = [
     { value: "other", label: "Other" },
 ];
 
+// ✅ Schema: category is now a string
 const validationSchema = Yup.object({
     name: Yup.string().required("Name is required"),
     age: Yup.string().required("Age is required"),
-    category: Yup.object().required("Category is required"),
+    category: Yup.string().required("Category is required"),
     location: Yup.string().required("Location is required"),
     shortDescription: Yup.string().required("Short description is required"),
     longDescription: Yup.string().required("Long description is required"),
 });
 
 const AddPet = () => {
-    const { user } = useContext(AuthContext); // ✅ Access user context
+    const { user } = useContext(AuthContext);
 
     const handleSubmit = async (values, { resetForm }) => {
         Swal.fire({
             title: "Confirm Pet Details",
             html: `
-                <img src="https://via.placeholder.com/150" alt="Pet Image" class="w-32 h-32 mx-auto rounded mb-4"/>
-                <p><strong>Name:</strong> ${values.name}</p>
-                <p><strong>Age:</strong> ${values.age}</p>
-                <p><strong>Category:</strong> ${values.category.label}</p>
-                <p><strong>Location:</strong> ${values.location}</p>
-                <p><strong>Short Description:</strong> ${values.shortDescription}</p>
-                <p><strong>Long Description:</strong> ${values.longDescription}</p>
-            `,
+        <img src="https://via.placeholder.com/150" alt="Pet Image" class="w-32 h-32 mx-auto rounded mb-4"/>
+        <p><strong>Name:</strong> ${values.name}</p>
+        <p><strong>Age:</strong> ${values.age}</p>
+        <p><strong>Category:</strong> ${values.category}</p>
+        <p><strong>Location:</strong> ${values.location}</p>
+        <p><strong>Short Description:</strong> ${values.shortDescription}</p>
+        <p><strong>Long Description:</strong> ${values.longDescription}</p>
+      `,
             showCancelButton: true,
             confirmButtonText: "Submit",
             cancelButtonText: "Cancel",
@@ -46,12 +47,12 @@ const AddPet = () => {
                 const petData = {
                     name: values.name,
                     age: values.age,
-                    category: values.category,
+                    category: values.category, // ✅ Already a string
                     location: values.location,
                     shortDescription: values.shortDescription,
                     longDescription: values.longDescription,
                     image: "https://via.placeholder.com/150",
-                    userEmail: user?.email || "unknown", // ✅ Include user email
+                    userEmail: user?.email || "unknown",
                 };
 
                 try {
@@ -63,9 +64,7 @@ const AddPet = () => {
                         body: JSON.stringify(petData),
                     });
 
-                    if (!res.ok) {
-                        throw new Error("Failed to submit pet data");
-                    }
+                    if (!res.ok) throw new Error("Failed to submit pet data");
 
                     const result = await res.json();
                     console.log("Server response:", result);
@@ -88,7 +87,7 @@ const AddPet = () => {
                 initialValues={{
                     name: "",
                     age: "",
-                    category: null,
+                    category: "",
                     location: "",
                     shortDescription: "",
                     longDescription: "",
@@ -96,7 +95,7 @@ const AddPet = () => {
                 validationSchema={validationSchema}
                 onSubmit={handleSubmit}
             >
-                {({ setFieldValue, errors, touched, values }) => (
+                {({ setFieldValue, values, errors, touched }) => (
                     <Form className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         {/* Name */}
                         <div>
@@ -126,8 +125,8 @@ const AddPet = () => {
                             <Select
                                 options={petCategories}
                                 name="category"
-                                value={values.category}
-                                onChange={(option) => setFieldValue("category", option)}
+                                value={petCategories.find((cat) => cat.value === values.category)}
+                                onChange={(option) => setFieldValue("category", option.value)} // ✅ store as string
                                 className="mt-2"
                             />
                             {errors.category && touched.category && (
@@ -178,7 +177,7 @@ const AddPet = () => {
                             />
                         </div>
 
-                        {/* Submit Button */}
+                        {/* Submit */}
                         <div className="md:col-span-2 text-right">
                             <button
                                 type="submit"
