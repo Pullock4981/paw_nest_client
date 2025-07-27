@@ -1,53 +1,49 @@
-import { useContext, useState } from "react";
-import { AuthContext } from "../../Context/AuthContext";
-import { useNavigate } from "react-router";
-import Swal from "sweetalert2";
+// import React, { useEffect, useState } from 'react';
+// import axios from 'axios';
+// import Swal from 'sweetalert2';
+// import { useParams, useNavigate } from 'react-router-dom';
+
 import axios from "axios";
+import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router";
+import Swal from "sweetalert2";
 
-
-const CreateCampaign = () => {
-    const { user } = useContext(AuthContext);
+const EditCampaign = () => {
+    const { id } = useParams(); // campaign ID from URL
     const navigate = useNavigate();
 
     const [formData, setFormData] = useState({
-        petName: '',
         maxDonation: '',
         lastDate: '',
         shortDescription: '',
         longDescription: ''
     });
 
+    useEffect(() => {
+        axios.get(`http://localhost:5000/campaigns/${id}`)
+            .then(res => {
+                const { maxDonation, lastDate, shortDescription, longDescription } = res.data;
+                setFormData({ maxDonation, lastDate, shortDescription, longDescription });
+            })
+            .catch(err => {
+                console.error(err);
+                Swal.fire('Error', 'Could not load campaign data', 'error');
+            });
+    }, [id]);
+
     const handleChange = (e) => {
         const { name, value } = e.target;
-        setFormData((prev) => ({ ...prev, [name]: value }));
+        setFormData(prev => ({ ...prev, [name]: value }));
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        if (!user?.email) {
-            Swal.fire('Error', 'User not logged in', 'error');
-            return;
-        }
-
-        const payload = {
-            ...formData,
-            userEmail: user.email,
-            maxDonation: parseFloat(formData.maxDonation)
-        };
-
         try {
-            const res = await axios.post('http://localhost:5000/campaigns', payload);
-            if (res.status === 201) {
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Success',
-                    text: 'Donation campaign created!',
-                    timer: 1500,
-                    showConfirmButton: false
-                }).then(() => {
-                    navigate('/userDashboard/myCampaigns');
-                });
+            const res = await axios.put(`http://localhost:5000/campaigns/${id}`, formData);
+            if (res.status === 200) {
+                Swal.fire('Success', 'Campaign updated!', 'success');
+                navigate('/my-donations');
             }
         } catch (err) {
             console.error(err);
@@ -57,19 +53,8 @@ const CreateCampaign = () => {
 
     return (
         <div className="max-w-3xl mx-auto p-6 bg-white shadow rounded mt-6">
-            <h2 className="text-2xl font-bold mb-4">Create Donation Campaign</h2>
+            <h2 className="text-2xl font-bold mb-4">Edit Donation Campaign</h2>
             <form onSubmit={handleSubmit} className="space-y-4">
-                <div>
-                    <label className="block font-semibold">Pet Name</label>
-                    <input
-                        type="text"
-                        name="petName"
-                        value={formData.petName}
-                        onChange={handleChange}
-                        className="mt-2 block w-full border p-2 rounded"
-                        required
-                    />
-                </div>
                 <div>
                     <label className="block font-semibold">Max Donation Amount</label>
                     <input
@@ -119,7 +104,7 @@ const CreateCampaign = () => {
                         type="submit"
                         className="bg-purple-600 hover:bg-purple-700 text-white px-6 py-2 rounded"
                     >
-                        Create Campaign
+                        Update Campaign
                     </button>
                 </div>
             </form>
@@ -127,4 +112,4 @@ const CreateCampaign = () => {
     );
 };
 
-export default CreateCampaign;
+export default EditCampaign;

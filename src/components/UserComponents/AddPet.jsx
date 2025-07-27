@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import Select from "react-select";
 import Swal from "sweetalert2";
+import { AuthContext } from "../../Context/AuthContext"; // ✅ Import user context
 
 const petCategories = [
     { value: "dog", label: "Dog" },
@@ -12,7 +13,6 @@ const petCategories = [
     { value: "other", label: "Other" },
 ];
 
-// ✅ Updated schema: Removed image validation
 const validationSchema = Yup.object({
     name: Yup.string().required("Name is required"),
     age: Yup.string().required("Age is required"),
@@ -23,43 +23,20 @@ const validationSchema = Yup.object({
 });
 
 const AddPet = () => {
-    // const handleSubmit = (values, { resetForm }) => {
-    //     Swal.fire({
-    //         title: "Confirm Pet Details",
-    //         html: `
-    //     <img src="https://via.placeholder.com/150" alt="Pet Image" class="w-32 h-32 mx-auto rounded mb-4"/>
-    //     <p><strong>Name:</strong> ${values.name}</p>
-    //     <p><strong>Age:</strong> ${values.age}</p>
-    //     <p><strong>Category:</strong> ${values.category.label}</p>
-    //     <p><strong>Location:</strong> ${values.location}</p>
-    //     <p><strong>Short Description:</strong> ${values.shortDescription}</p>
-    //     <p><strong>Long Description:</strong> ${values.longDescription}</p>
-    //   `,
-    //         showCancelButton: true,
-    //         confirmButtonText: "Submit",
-    //         cancelButtonText: "Cancel",
-    //         confirmButtonColor: "#865B97",
-    //     }).then((result) => {
-    //         if (result.isConfirmed) {
-    //             console.log("Confirmed Pet Data:", values);
-    //             Swal.fire("Submitted!", "Pet data has been submitted.", "success");
-    //             resetForm();
-    //         }
-    //     });
-    // };
+    const { user } = useContext(AuthContext); // ✅ Access user context
 
     const handleSubmit = async (values, { resetForm }) => {
         Swal.fire({
             title: "Confirm Pet Details",
             html: `
-        <img src="https://via.placeholder.com/150" alt="Pet Image" class="w-32 h-32 mx-auto rounded mb-4"/>
-        <p><strong>Name:</strong> ${values.name}</p>
-        <p><strong>Age:</strong> ${values.age}</p>
-        <p><strong>Category:</strong> ${values.category.label}</p>
-        <p><strong>Location:</strong> ${values.location}</p>
-        <p><strong>Short Description:</strong> ${values.shortDescription}</p>
-        <p><strong>Long Description:</strong> ${values.longDescription}</p>
-      `,
+                <img src="https://via.placeholder.com/150" alt="Pet Image" class="w-32 h-32 mx-auto rounded mb-4"/>
+                <p><strong>Name:</strong> ${values.name}</p>
+                <p><strong>Age:</strong> ${values.age}</p>
+                <p><strong>Category:</strong> ${values.category.label}</p>
+                <p><strong>Location:</strong> ${values.location}</p>
+                <p><strong>Short Description:</strong> ${values.shortDescription}</p>
+                <p><strong>Long Description:</strong> ${values.longDescription}</p>
+            `,
             showCancelButton: true,
             confirmButtonText: "Submit",
             cancelButtonText: "Cancel",
@@ -73,7 +50,8 @@ const AddPet = () => {
                     location: values.location,
                     shortDescription: values.shortDescription,
                     longDescription: values.longDescription,
-                    image: "https://via.placeholder.com/150", // Default or placeholder image
+                    image: "https://via.placeholder.com/150",
+                    userEmail: user?.email || "unknown", // ✅ Include user email
                 };
 
                 try {
