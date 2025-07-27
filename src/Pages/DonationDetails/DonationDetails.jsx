@@ -1,154 +1,153 @@
-import React, { useEffect, useState } from "react";
-import { useParams } from "react-router";
-import axios from "axios";
+import React, { useEffect, useState } from 'react';
+import { useParams } from 'react-router';
+import axios from 'axios';
+import { CardElement, useElements, useStripe } from '@stripe/react-stripe-js';
 
 const DonationDetails = () => {
-    const { id } = useParams();
+    const { id } = useParams(); // Assuming you use /donationDetails/:id
     const [campaign, setCampaign] = useState(null);
+    const [amount, setAmount] = useState('');
+    const [modalOpen, setModalOpen] = useState(false);
+    const [loading, setLoading] = useState(false);
+    const [message, setMessage] = useState('');
     const [recommended, setRecommended] = useState([]);
-    const [donateModalOpen, setDonateModalOpen] = useState(false);
-    const [donationAmount, setDonationAmount] = useState("");
+
+    const stripe = useStripe();
+    const elements = useElements();
 
     useEffect(() => {
-        const fetchDetails = async () => {
-            try {
-                const res = await axios.get(`http://localhost:5000/campaigns/${id}`);
-                setCampaign(res.data);
+        axios.get(`http://localhost:5000/campaigns/${id}`).then(res => {
+            setCampaign(res.data);
+        });
 
-                // Fetch other campaigns and show 3 excluding current
-                const allRes = await axios.get("http://localhost:5000/campaigns");
-                const filtered = allRes.data
-                    .filter((c) => c._id !== id && !c.paused)
-                    .slice(0, 3);
-                setRecommended(filtered);
-            } catch (err) {
-                console.error("Error fetching campaign:", err);
-            }
-        };
-
-        fetchDetails();
+        // Load other campaigns
+        axios.get('http://localhost:5000/campaigns').then(res => {
+            const others = res.data.filter(c => c._id !== id && !c.paused).slice(0, 3);
+            setRecommended(others);
+        });
     }, [id]);
 
-    const handleDonateSubmit = () => {
-        if (!donationAmount || isNaN(donationAmount) || Number(donationAmount) <= 0) {
-            alert("Please enter a valid amount");
-            return;
+    const handlePayment = async (e) => {
+        e.preventDefault();
+        setLoading(true);
+        setMessage('');
+
+        try {
+            const { data } = await axios.post('http://localhost:5000/api/payment/create-payment-intent', {
+                amount: Number(amount),
+            });
+
+            const clientSecret = data.clientSecret;
+
+            const result = await stripe.confirmCardPayment(clientSecret, {
+                payment_method: {
+                    card: elements.getElement(CardElement),
+                },
+            });
+
+            if (result.error) {
+                setMessage(result.error.message);
+            } else if (result.paymentIntent.status === 'succeeded') {
+                setMessage('🎉 Donation successful!');
+                setAmount('');
+                setModalOpen(false);
+            }
+        } catch (err) {
+            setMessage('Error processing payment.');
         }
 
-        alert(`Pretending to donate $${donationAmount}...`);
-        setDonateModalOpen(false);
-        setDonationAmount("");
+        setLoading(false);
     };
 
-    if (!campaign) return <div className="text-center mt-10">Loading donation details...</div>;
+    if (!campaign) return <p>Loading campaign details...</p>;
 
-    const donated = campaign.donatedAmount || 0;
-    const progress = Math.min((donated / campaign.maxDonation) * 100, 100).toFixed(1);
+    const progress = Math.min((campaign.donatedAmount || 0) / campaign.maxDonation * 100, 100).toFixed(1);
 
     return (
-        <div className="max-w-5xl mx-auto px-4 py-10">
-            <h1 className="text-3xl font-bold mb-4 text-center">{campaign.petName}</h1>
-            <img
-                src={campaign.petImage || "https://via.placeholder.com/500"}
-                alt={campaign.petName}
-                className="w-full h-96 object-cover rounded mb-6"
-            />
-            <p className="text-gray-700 mb-4">
-                <strong>Max Donation:</strong> ${campaign.maxDonation}
-            </p>
-            <p className="text-gray-700 mb-4">
-                <strong>Donated So Far:</strong> ${donated}
-            </p>
+        <div className="max-w-4xl mx-auto p-6">
+            <h1 className="text-3xl font-bold mb-4">{campaign.petName}'s Donation Campaign</h1>
 
-            <div className="bg-gray-200 h-4 rounded-full mb-4">
-                <div
-                    className="bg-purple-600 h-4 rounded-full"
-                    style={{ width: `${progress}%` }}
-                ></div>
-            </div>
-            <p className="text-sm text-right text-gray-500 mb-6">{progress}% funded</p>
+            <img src={campaign.petImage} className="w-full h-64 object-cover rounded mb-4" alt="Pet" />
 
-            <div className="text-center">
-                <button
-                    onClick={() => setDonateModalOpen(true)}
-                    className="bg-purple-600 text-white px-6 py-2 rounded hover:bg-purple-700"
-                >
-                    Donate Now
-                </button>
+            <p className="mb-2"><strong>Goal:</strong> ${campaign.maxDonation}</p>
+            <p className="mb-2"><strong>Donated:</strong> ${campaign.donatedAmount || 0}</p>
+
+            <div className="bg-gray-200 h-4 rounded-full overflow-hidden mb-4">
+                <div className="bg-purple-600 h-4" style={{ width: `${progress}%` }}></div>
             </div>
 
-            {/* Donation Modal */}
-            {donateModalOpen && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-                    <div className="bg-white rounded-lg p-6 w-96 shadow-lg relative">
-                        <h2 className="text-xl font-semibold mb-4 text-center">Make a Donation</h2>
-                        <label className="block mb-2 text-sm">Donation Amount ($)</label>
-                        <input
-                            type="number"
-                            value={donationAmount}
-                            onChange={(e) => setDonationAmount(e.target.value)}
-                            className="w-full px-3 py-2 border rounded mb-4"
-                        />
-                        <div className="bg-gray-100 p-4 rounded text-sm text-gray-500 mb-4 text-center">
-                            Stripe Payment Element will go here
-                        </div>
-                        <div className="flex justify-end gap-2">
-                            <button
-                                onClick={() => setDonateModalOpen(false)}
-                                className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400"
-                            >
-                                Cancel
-                            </button>
-                            <button
-                                onClick={handleDonateSubmit}
-                                className="px-4 py-2 bg-purple-600 text-white rounded hover:bg-purple-700"
-                            >
-                                Submit Donation
-                            </button>
-                        </div>
+            <p className="mb-4 text-sm text-gray-600">{progress}% funded</p>
+
+            <p className="mb-6">{campaign.longDescription}</p>
+
+            <button
+                onClick={() => setModalOpen(true)}
+                className="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700"
+            >
+                Donate Now
+            </button>
+
+            {/* Modal */}
+            {modalOpen && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+                    <div className="bg-white p-6 rounded shadow-md w-full max-w-md">
+                        <h2 className="text-xl font-semibold mb-4">Enter Donation Details</h2>
+                        <form onSubmit={handlePayment} className="space-y-4">
+                            <input
+                                type="number"
+                                value={amount}
+                                onChange={(e) => setAmount(e.target.value)}
+                                placeholder="Amount in USD"
+                                className="w-full px-3 py-2 border rounded"
+                                required
+                            />
+                            <div className="border p-3 rounded">
+                                <CardElement
+                                    options={{
+                                        style: { base: { fontSize: '16px' } },
+                                        hidePostalCode: true // 👈 hides ZIP
+                                    }}
+                                />
+                            </div>
+                            {message && <p className="text-red-500">{message}</p>}
+                            <div className="flex justify-end gap-2 mt-4">
+                                <button
+                                    type="button"
+                                    onClick={() => setModalOpen(false)}
+                                    className="px-4 py-2 border rounded"
+                                >
+                                    Cancel
+                                </button>
+                                <button
+                                    type="submit"
+                                    disabled={!stripe || loading}
+                                    className="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700"
+                                >
+                                    {loading ? 'Processing...' : 'Donate'}
+                                </button>
+                            </div>
+                        </form>
                     </div>
                 </div>
             )}
 
-            {/* Recommended Campaigns */}
+            {/* Recommended Section */}
             <div className="mt-10">
-                <h2 className="text-2xl font-bold mb-4">Recommended Campaigns</h2>
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-                    {recommended.map((rec) => {
-                        const recProgress = Math.min((rec.donatedAmount || 0) / rec.maxDonation, 1) * 100;
-
-                        return (
-                            <div
-                                key={rec._id}
-                                className="border rounded-lg shadow hover:shadow-lg transition p-4 bg-white flex flex-col"
+                <h2 className="text-2xl font-semibold mb-4">Recommended Campaigns</h2>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    {recommended.map(c => (
+                        <div key={c._id} className="border rounded p-4 shadow">
+                            <img src={c.petImage} className="h-40 w-full object-cover rounded mb-2" />
+                            <h3 className="text-lg font-bold">{c.petName}</h3>
+                            <p className="text-sm text-gray-600 mb-2">${c.maxDonation}</p>
+                            <button
+                                className="text-purple-600 underline"
+                                onClick={() => window.location.href = `/donationCampain/${c._id}`}
                             >
-                                <img
-                                    src={rec.petImage || "https://via.placeholder.com/300"}
-                                    alt={rec.petName}
-                                    className="w-full h-40 object-cover rounded mb-3"
-                                />
-                                <h3 className="text-lg font-semibold mb-1">{rec.petName}</h3>
-                                <p className="text-sm text-gray-600 mb-1">
-                                    Max: ${rec.maxDonation}
-                                </p>
-                                <div className="bg-gray-200 h-3 rounded-full mb-2 overflow-hidden">
-                                    <div
-                                        className="bg-purple-600 h-3 rounded-full"
-                                        style={{ width: `${recProgress}%` }}
-                                    ></div>
-                                </div>
-                                <p className="text-right text-sm text-gray-500 mb-3">
-                                    {recProgress.toFixed(1)}% funded
-                                </p>
-                                <button
-                                    onClick={() => window.location.href = `/donationDetails/${rec._id}`}
-                                    className="mt-auto bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700"
-                                >
-                                    View Details
-                                </button>
-                            </div>
-                        );
-                    })}
+                                View Campaign
+                            </button>
+                        </div>
+                    ))}
                 </div>
             </div>
         </div>
