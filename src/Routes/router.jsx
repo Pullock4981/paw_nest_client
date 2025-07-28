@@ -18,6 +18,11 @@ import MyDonation from '../components/UserComponents/MyDonation';
 import UserDashboardHome from '../components/UserComponents/UserDashboardHome';
 import UpdatePet from '../components/UserComponents/UpdatePet';
 import EditCampaign from '../components/UserComponents/EditCampaign';
+import AdminDashboardLayout from '../Layouts/AdminDashboardLayout';
+import AdminDashboardHome from '../components/AdminComponents/AdminDashboardHome';
+import AllUsers from '../components/AdminComponents/AllUsers';
+import AllPets from '../components/AdminComponents/AllPets ';
+import AllDonations from '../components/AdminComponents/AllDonations';
 
 const router = createBrowserRouter([
     {
@@ -51,6 +56,7 @@ const router = createBrowserRouter([
             {
                 path: "/donationDetails/:id",
                 Component: DonationDetails
+                
             },
         ]
     },
@@ -67,6 +73,16 @@ const router = createBrowserRouter([
             { path: "myCampaigns", Component: MyCampaign },
             { path: "myDonations", Component: MyDonation },
             { path: "updatePet/:id", Component: UpdatePet },
+        ]
+    },
+    {
+        path: "/adminDashboard",
+        Component: AdminDashboardLayout,
+        children: [
+            { index: true, Component: AdminDashboardHome },
+            { path: "allUsers", Component: AllUsers },
+            { path: "allPets", Component: AllPets },
+            { path: "allDonations", Component: AllDonations },
         ]
     }
 ]);

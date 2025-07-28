@@ -42,7 +42,6 @@ const Navbar = () => {
             <li><NavLink to="/">Home</NavLink></li>
             <li><NavLink to="/petList">Pet Listing</NavLink></li>
             <li><NavLink to="/donationCampain">Donation Campaigns</NavLink></li>
-            {/* <li><NavLink to='/donationDetails'>Donation Details</NavLink></li> */}
         </>
     );
 

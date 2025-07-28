@@ -1,19 +1,17 @@
 import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../Context/AuthContext";
+import Swal from "sweetalert2";
 
 const AdoptionReq = () => {
     const { user } = useContext(AuthContext);
     const [requests, setRequests] = useState([]);
     const [loading, setLoading] = useState(true);
 
-    // Fetch adoption requests where ownerEmail === logged-in user's email
     const fetchRequests = async () => {
         if (!user?.email) return;
 
         try {
-            const res = await fetch(
-                `http://localhost:5000/adoptionRequests?ownerEmail=${user.email}`
-            );
+            const res = await fetch(`http://localhost:5000/adoptionRequests?ownerEmail=${user.email}`);
             const data = await res.json();
             setRequests(data);
         } catch (error) {
@@ -27,23 +25,43 @@ const AdoptionReq = () => {
         fetchRequests();
     }, [user]);
 
-    // Update status (accept or reject)
-    const handleStatusChange = async (id, status) => {
+    const handleStatusChange = async (requestId, status, petId) => {
         try {
-            const res = await fetch(`http://localhost:5000/adoptionRequests/${id}`, {
-                method: "PATCH",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({ status }),
-            });
+            if (status === "accepted") {
+                const confirm = await Swal.fire({
+                    title: "Confirm Adoption",
+                    text: "Are you sure you want to accept this request? The pet will be removed.",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonText: "Yes, accept",
+                });
 
-            if (!res.ok) throw new Error("Failed to update status");
+                if (!confirm.isConfirmed) return;
 
-            // Refresh requests
+                const res = await fetch(`http://localhost:5000/adoptionRequests/${requestId}/accept`, {
+                    method: "DELETE",
+                });
+
+                if (!res.ok) throw new Error("Failed to accept request and remove pet");
+
+                Swal.fire("Adopted!", "The pet has been adopted and removed.", "success");
+            } else {
+                const res = await fetch(`http://localhost:5000/adoptionRequests/${requestId}`, {
+                    method: "PATCH",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({ status: "rejected" }),
+                });
+
+                if (!res.ok) throw new Error("Failed to reject request");
+                Swal.fire("Rejected", "The request has been rejected.", "info");
+            }
+
             fetchRequests();
         } catch (err) {
             console.error("Error updating status:", err);
+            Swal.fire("Error", "Something went wrong. Try again.", "error");
         }
     };
 
@@ -89,13 +107,17 @@ const AdoptionReq = () => {
                                     {req.status === "pending" ? (
                                         <div className="flex gap-2">
                                             <button
-                                                onClick={() => handleStatusChange(req._id, "accepted")}
+                                                onClick={() =>
+                                                    handleStatusChange(req._id, "accepted", req.petId)
+                                                }
                                                 className="bg-green-500 text-white px-2 py-1 rounded"
                                             >
                                                 Accept
                                             </button>
                                             <button
-                                                onClick={() => handleStatusChange(req._id, "rejected")}
+                                                onClick={() =>
+                                                    handleStatusChange(req._id, "rejected", req.petId)
+                                                }
                                                 className="bg-red-500 text-white px-2 py-1 rounded"
                                             >
                                                 Reject
