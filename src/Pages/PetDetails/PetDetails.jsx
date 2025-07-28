@@ -12,6 +12,7 @@ const PetDetails = () => {
     const [phone, setPhone] = useState("");
     const [address, setAddress] = useState("");
     const [loading, setLoading] = useState(false);
+    const [hasRequested, setHasRequested] = useState(false);
 
     useEffect(() => {
         const fetchPet = async () => {
@@ -19,12 +20,22 @@ const PetDetails = () => {
                 const res = await fetch(`http://localhost:5000/pets/${id}`);
                 const data = await res.json();
                 setPet(data);
+
+                // Check if current user already sent a request
+                if (user?.email && data?._id) {
+                    const reqRes = await fetch(
+                        `http://localhost:5000/adoptionRequests/check?petId=${data._id}&email=${user.email}`
+                    );
+                    const reqData = await reqRes.json();
+                    setHasRequested(reqData.exists);
+                }
             } catch (err) {
-                console.error("Failed to fetch pet:", err);
+                console.error("Failed to fetch pet or request info:", err);
             }
         };
+
         fetchPet();
-    }, [id]);
+    }, [id, user]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -52,7 +63,7 @@ const PetDetails = () => {
             email: user?.email,
             phone,
             address,
-            ownerEmail: pet.userEmail, // ✅ Make sure pet.userEmail exists
+            ownerEmail: pet.userEmail,
         };
 
         setLoading(true);
@@ -68,6 +79,7 @@ const PetDetails = () => {
                 setIsModalOpen(false);
                 setPhone("");
                 setAddress("");
+                setHasRequested(true); // Update immediately
             } else {
                 Swal.fire("Error", "Request failed. Please try again.", "error");
             }
@@ -81,6 +93,8 @@ const PetDetails = () => {
 
     if (!pet) return <div>Loading...</div>;
 
+    const isOwner = pet.userEmail === user?.email;
+
     return (
         <div className="max-w-2xl mx-auto p-4">
             <h2 className="text-2xl font-bold">{pet.name}</h2>
@@ -92,9 +106,14 @@ const PetDetails = () => {
 
             <button
                 onClick={() => setIsModalOpen(true)}
-                className="mt-4 bg-green-600 text-white px-4 py-2 rounded"
+                className="mt-4 bg-green-600 text-white px-4 py-2 rounded disabled:opacity-60"
+                disabled={isOwner || hasRequested}
             >
-                Adopt
+                {isOwner
+                    ? "You own this pet"
+                    : hasRequested
+                        ? "Already Requested"
+                        : "Adopt"}
             </button>
 
             <Modal isOpen={isModalOpen} onRequestClose={() => setIsModalOpen(false)} ariaHideApp={false}>
