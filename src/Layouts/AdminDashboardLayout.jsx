@@ -1,7 +1,7 @@
 import React from 'react';
 import { FaUserShield, FaPaw, FaHandHoldingHeart, FaHome, FaListAlt } from 'react-icons/fa';
 import Logo from '../components/Logo/Logo';
-import { NavLink } from 'react-router';
+import { Link, NavLink, Outlet } from 'react-router';
 
 const AdminDashboardLayout = () => {
     return (

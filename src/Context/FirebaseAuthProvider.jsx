@@ -10,7 +10,6 @@ import {
 } from "firebase/auth";
 import { auth } from '../Firebase/firebase.init';
 
-// Google provider
 const googleProvider = new GoogleAuthProvider();
 
 const FirebaseAuthProvider = ({ children }) => {
@@ -18,25 +17,21 @@ const FirebaseAuthProvider = ({ children }) => {
     const [role, setRole] = useState(null);
     const [loading, setLoading] = useState(true);
 
-    // Create user with email/password
     const createUser = (email, password) => {
         setLoading(true);
         return createUserWithEmailAndPassword(auth, email, password);
     };
 
-    // Google sign-in
     const googleSignIn = () => {
         setLoading(true);
         return signInWithPopup(auth, googleProvider);
     };
 
-    // Login
     const logInUser = (email, password) => {
         setLoading(true);
         return signInWithEmailAndPassword(auth, email, password);
     };
 
-    // Logout
     const SignOutUser = () => {
         setLoading(true);
         setUser(null);
@@ -44,14 +39,23 @@ const FirebaseAuthProvider = ({ children }) => {
         return signOut(auth);
     };
 
-    // 🔄 Save user to backend
+    // ✅ Save user only if not already in DB
     const saveUserToBackend = async (firebaseUser) => {
         try {
+            const email = firebaseUser.email;
+
+            // Check if user exists
+            const res = await fetch(`http://localhost:5000/users/${email}`);
+            if (res.status === 200) {
+                return; // User exists, don't overwrite role
+            }
+
+            // Save new user
             const userInfo = {
                 name: firebaseUser.displayName || "Anonymous",
                 email: firebaseUser.email,
                 photoURL: firebaseUser.photoURL || null,
-                role: "user", // Default role
+                role: "user",
             };
 
             await fetch("http://localhost:5000/users", {
@@ -66,25 +70,23 @@ const FirebaseAuthProvider = ({ children }) => {
         }
     };
 
-    // 🔄 Fetch user role from backend
     const fetchUserRole = async (email) => {
         try {
             const res = await fetch(`http://localhost:5000/users/${email}`);
             const data = await res.json();
-            setRole(data.role || 'user'); // Default to 'user'
+            setRole(data.role || 'user');
         } catch (error) {
             console.error('Failed to fetch role:', error);
             setRole('user');
         }
     };
 
-    // 🔁 Listen for Firebase auth changes
     useEffect(() => {
-        const unSubscribe = onAuthStateChanged(auth, (currentUser) => {
+        const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
             if (currentUser) {
                 setUser(currentUser);
-                saveUserToBackend(currentUser);       // ✅ Save to backend
-                fetchUserRole(currentUser.email);     // ✅ Get role
+                saveUserToBackend(currentUser);
+                fetchUserRole(currentUser.email);
             } else {
                 setUser(null);
                 setRole(null);
@@ -92,10 +94,9 @@ const FirebaseAuthProvider = ({ children }) => {
             setLoading(false);
         });
 
-        return () => unSubscribe();
+        return () => unsubscribe();
     }, []);
 
-    // Auth context value
     const authInfo = {
         user,
         role,

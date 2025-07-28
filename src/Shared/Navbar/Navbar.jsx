@@ -1,17 +1,15 @@
 
-import { useContext, useEffect, useRef, useState } from "react";
-import { AuthContext } from "../../Context/AuthContext";
-import { Link, NavLink } from "react-router";
-import Logo from "../../components/Logo/Logo";
-import './Navbar.css'
-
+import { useContext, useEffect, useRef, useState } from 'react';
+import './Navbar.css';
+import { AuthContext } from '../../Context/AuthContext';
+import { Link, NavLink } from 'react-router';
+import Logo from '../../components/Logo/Logo';
 
 const Navbar = () => {
-    const { user, SignOutUser } = useContext(AuthContext);
+    const { user, SignOutUser, role } = useContext(AuthContext);
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const dropdownRef = useRef();
 
-    // Close dropdown when clicking outside
     useEffect(() => {
         const handleClickOutside = (event) => {
             if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -23,18 +21,9 @@ const Navbar = () => {
     }, []);
 
     const handleSignOut = () => {
-        SignOutUser()
-            .then(() => {
-                // Swal.fire({
-                //     icon: "success",
-                //     title: "Logged out successfully",
-                //     showConfirmButton: false,
-                //     timer: 1500,
-                // });
-            })
-            .catch((error) => {
-                console.error("Sign out error:", error);
-            });
+        SignOutUser().catch((error) => {
+            console.error("Sign out error:", error);
+        });
     };
 
     const navLinks = (
@@ -62,7 +51,7 @@ const Navbar = () => {
                     </ul>
                 </div>
                 <Link to="/">
-                    <Logo></Logo>
+                    <Logo />
                 </Link>
             </div>
 
@@ -86,16 +75,39 @@ const Navbar = () => {
                         {isDropdownOpen && (
                             <div className="absolute right-0 top-12 bg-base-100 shadow-md rounded w-40 z-50">
                                 <ul className="text-sm">
-                                    <li><Link to="/userDashboard" className="block px-4 py-2 hover:bg-base-200" onClick={() => setIsDropdownOpen(false)}>Dashboard</Link></li>
-                                    <li><button onClick={handleSignOut} className="w-full text-left px-4 py-2 hover:bg-base-200">Logout</button></li>
+                                    <li>
+                                        <Link
+                                            to={
+                                                role === "admin"
+                                                    ? "/adminDashboard"
+                                                    : role === "user"
+                                                        ? "/userDashboard"
+                                                        : "/"
+                                            }
+                                            className="block px-4 py-2 hover:bg-base-200"
+                                            onClick={() => setIsDropdownOpen(false)}
+                                        >
+                                            {role ? "Dashboard" : "Loading..."}
+                                        </Link>
+                                    </li>
+                                    <li>
+                                        <button
+                                            onClick={handleSignOut}
+                                            className="w-full text-left px-4 py-2 hover:bg-base-200"
+                                        >
+                                            Logout
+                                        </button>
+                                    </li>
                                 </ul>
                             </div>
                         )}
                     </div>
                 ) : (
-                    <>
-                        <Link to='/login'><button className="btn btn-outline bg-[#EFCD5C] hover:bg-[#865B97] hover:text-white btn-sm">Login</button></Link>
-                    </>
+                    <Link to='/login'>
+                        <button className="btn btn-outline bg-[#EFCD5C] hover:bg-[#865B97] hover:text-white btn-sm">
+                            Login
+                        </button>
+                    </Link>
                 )}
             </div>
         </div>
