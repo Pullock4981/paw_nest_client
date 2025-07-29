@@ -67,7 +67,7 @@ const DonationDetails = () => {
         <div className="max-w-4xl mx-auto p-6">
             <h1 className="text-3xl font-bold mb-4">{campaign.petName}'s Donation Campaign</h1>
 
-            <img src={campaign.petImage} className="w-full h-64 object-cover rounded mb-4" alt="Pet" />
+            <img src={campaign.image} className="w-full h-64 object-cover rounded mb-4" alt="Pet" />
 
             <p className="mb-2"><strong>Goal:</strong> ${campaign.maxDonation}</p>
             <p className="mb-2"><strong>Donated:</strong> ${campaign.donatedAmount || 0}</p>

@@ -13,7 +13,6 @@ const petCategories = [
     { value: "other", label: "Other" },
 ];
 
-// ✅ Schema: category is now a string
 const validationSchema = Yup.object({
     name: Yup.string().required("Name is required"),
     age: Yup.string().required("Age is required"),
@@ -21,62 +20,75 @@ const validationSchema = Yup.object({
     location: Yup.string().required("Location is required"),
     shortDescription: Yup.string().required("Short description is required"),
     longDescription: Yup.string().required("Long description is required"),
+    image: Yup.mixed().required("Image is required"),
 });
 
 const AddPet = () => {
     const { user } = useContext(AuthContext);
 
     const handleSubmit = async (values, { resetForm }) => {
-        Swal.fire({
-            title: "Confirm Pet Details",
-            html: `
-        <img src="https://via.placeholder.com/150" alt="Pet Image" class="w-32 h-32 mx-auto rounded mb-4"/>
-        <p><strong>Name:</strong> ${values.name}</p>
-        <p><strong>Age:</strong> ${values.age}</p>
-        <p><strong>Category:</strong> ${values.category}</p>
-        <p><strong>Location:</strong> ${values.location}</p>
-        <p><strong>Short Description:</strong> ${values.shortDescription}</p>
-        <p><strong>Long Description:</strong> ${values.longDescription}</p>
-      `,
-            showCancelButton: true,
-            confirmButtonText: "Submit",
-            cancelButtonText: "Cancel",
-            confirmButtonColor: "#865B97",
-        }).then(async (result) => {
-            if (result.isConfirmed) {
-                const petData = {
-                    name: values.name,
-                    age: values.age,
-                    category: values.category, // ✅ Already a string
-                    location: values.location,
-                    shortDescription: values.shortDescription,
-                    longDescription: values.longDescription,
-                    image: "https://via.placeholder.com/150",
-                    userEmail: user?.email || "unknown",
-                };
+        try {
+            // ✅ Upload image to ImgBB
+            const imageData = new FormData();
+            imageData.append("image", values.image);
 
-                try {
+            const uploadRes = await fetch(
+                `https://api.imgbb.com/1/upload?key=145f5aeaf6a15c67199ff6c3ef4dbd4e`,
+                {
+                    method: "POST",
+                    body: imageData,
+                }
+            );
+
+            const uploadResult = await uploadRes.json();
+            const imageUrl = uploadResult?.data?.url;
+
+            if (!imageUrl) throw new Error("Image upload failed.");
+
+            // ✅ Confirm and Submit
+            Swal.fire({
+                title: "Confirm Pet Details",
+                html: `
+                    <img src="${imageUrl}" alt="Pet Image" class="w-32 h-32 mx-auto rounded mb-4"/>
+                    <p><strong>Name:</strong> ${values.name}</p>
+                    <p><strong>Age:</strong> ${values.age}</p>
+                    <p><strong>Category:</strong> ${values.category}</p>
+                    <p><strong>Location:</strong> ${values.location}</p>
+                    <p><strong>Short Description:</strong> ${values.shortDescription}</p>
+                    <p><strong>Long Description:</strong> ${values.longDescription}</p>
+                `,
+                showCancelButton: true,
+                confirmButtonText: "Submit",
+                confirmButtonColor: "#865B97",
+            }).then(async (result) => {
+                if (result.isConfirmed) {
+                    const petData = {
+                        name: values.name,
+                        age: values.age,
+                        category: values.category,
+                        location: values.location,
+                        shortDescription: values.shortDescription,
+                        longDescription: values.longDescription,
+                        image: imageUrl,
+                        userEmail: user?.email || "unknown",
+                    };
+
                     const res = await fetch("http://localhost:5000/pets", {
                         method: "POST",
-                        headers: {
-                            "Content-Type": "application/json",
-                        },
+                        headers: { "Content-Type": "application/json" },
                         body: JSON.stringify(petData),
                     });
 
                     if (!res.ok) throw new Error("Failed to submit pet data");
 
-                    const result = await res.json();
-                    console.log("Server response:", result);
-
                     Swal.fire("Submitted!", "Pet data has been submitted.", "success");
                     resetForm();
-                } catch (error) {
-                    console.error("Submission error:", error);
-                    Swal.fire("Error", "Something went wrong!", "error");
                 }
-            }
-        });
+            });
+        } catch (error) {
+            console.error("Submission error:", error);
+            Swal.fire("Error", "Something went wrong!", "error");
+        }
     };
 
     return (
@@ -91,13 +103,15 @@ const AddPet = () => {
                     location: "",
                     shortDescription: "",
                     longDescription: "",
+                    image: null,
                 }}
                 validationSchema={validationSchema}
                 onSubmit={handleSubmit}
             >
                 {({ setFieldValue, values, errors, touched }) => (
                     <Form className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        {/* Name */}
+
+                        {/* Pet Name */}
                         <div>
                             <label className="block font-semibold">Pet Name</label>
                             <Field
@@ -126,7 +140,7 @@ const AddPet = () => {
                                 options={petCategories}
                                 name="category"
                                 value={petCategories.find((cat) => cat.value === values.category)}
-                                onChange={(option) => setFieldValue("category", option.value)} // ✅ store as string
+                                onChange={(option) => setFieldValue("category", option.value)}
                                 className="mt-2"
                             />
                             {errors.category && touched.category && (
@@ -153,11 +167,7 @@ const AddPet = () => {
                                 className="mt-2 block w-full border p-2 rounded"
                                 placeholder="Short description or owner note"
                             />
-                            <ErrorMessage
-                                name="shortDescription"
-                                component="div"
-                                className="text-red-500 text-sm"
-                            />
+                            <ErrorMessage name="shortDescription" component="div" className="text-red-500 text-sm" />
                         </div>
 
                         {/* Long Description */}
@@ -170,11 +180,22 @@ const AddPet = () => {
                                 className="mt-2 block w-full border p-2 rounded"
                                 placeholder="Detailed info about the pet"
                             />
-                            <ErrorMessage
-                                name="longDescription"
-                                component="div"
-                                className="text-red-500 text-sm"
+                            <ErrorMessage name="longDescription" component="div" className="text-red-500 text-sm" />
+                        </div>
+
+                        {/* Image Upload */}
+                        <div className="md:col-span-2">
+                            <label className="block font-semibold">Pet Image</label>
+                            <input
+                                type="file"
+                                name="image"
+                                accept="image/*"
+                                className="mt-2 block w-full border p-2 rounded"
+                                onChange={(e) => setFieldValue("image", e.target.files[0])}
                             />
+                            {errors.image && touched.image && (
+                                <div className="text-red-500 text-sm">{errors.image}</div>
+                            )}
                         </div>
 
                         {/* Submit */}

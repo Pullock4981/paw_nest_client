@@ -67,9 +67,9 @@ const DonationCampaign = () => {
                             className="border rounded-lg shadow hover:shadow-lg transition p-4 bg-white flex flex-col"
                         >
                             <img
-                                src={campaign.petImage || "https://via.placeholder.com/300"}
+                                src={campaign.image || "https://via.placeholder.com/300"}
                                 alt={campaign.petName}
-                                className="w-full h-48 object-cover rounded mb-4"
+                                className="w-full h-24 object-cover rounded mb-4"
                             />
                             <h3 className="text-xl font-semibold mb-2">{campaign.petName}</h3>
                             <p className="text-sm text-gray-600 mb-1">

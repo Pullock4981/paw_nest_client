@@ -10,50 +10,48 @@ const PetListing = () => {
     const [hasMore, setHasMore] = useState(true);
     const [loading, setLoading] = useState(false);
 
-    const limit = 9; // number of pets per page
+    const limit = 9;
     const navigate = useNavigate();
 
-    // Fetch pets from server with filters, pagination
     const fetchPets = useCallback(async () => {
         setLoading(true);
         try {
-            // Build query params
             let url = `http://localhost:5000/pets?adopted=false&page=${page}&limit=${limit}`;
 
-            if (searchTerm.trim() !== "") {
+            if (searchTerm.trim()) {
                 url += `&search=${encodeURIComponent(searchTerm.trim())}`;
             }
+
             if (selectedCategory) {
                 url += `&category=${encodeURIComponent(selectedCategory)}`;
             }
 
             const response = await fetch(url);
             if (!response.ok) throw new Error("Failed to fetch pets");
-
             const data = await response.json();
 
-            // Append new data or replace
             setPets((prev) => (page === 1 ? data : [...prev, ...data]));
-
-            // If less than limit, no more data
             setHasMore(data.length === limit);
 
-            // Extract unique categories from the fetched pets, only strings
-            const uniqueCategories = [
-                ...new Set(
-                    data
-                        .map((p) => p.category)
-                        .filter((cat) => typeof cat === "string" && cat.trim() !== "")
-                ),
-            ];
-            setCategories(uniqueCategories);
-        } catch (error) {
-            console.error(error);
+            // Only extract categories when page is 1
+            if (page === 1) {
+                const uniqueCategories = [
+                    ...new Set(
+                        data
+                            .map((p) => p.category)
+                            .filter((cat) => typeof cat === "string" && cat.trim() !== "")
+                    ),
+                ];
+                setCategories(uniqueCategories);
+            }
+        } catch (err) {
+            console.error(err);
         } finally {
             setLoading(false);
         }
     }, [page, searchTerm, selectedCategory]);
 
+    // Initial + paginated load
     useEffect(() => {
         fetchPets();
     }, [fetchPets]);
@@ -62,8 +60,7 @@ const PetListing = () => {
     useEffect(() => {
         const handleScroll = () => {
             if (
-                window.innerHeight + window.scrollY >=
-                document.documentElement.scrollHeight - 300 &&
+                window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 300 &&
                 !loading &&
                 hasMore
             ) {
@@ -75,35 +72,25 @@ const PetListing = () => {
         return () => window.removeEventListener("scroll", handleScroll);
     }, [loading, hasMore]);
 
-    // When searchTerm or category changes, reset page & pets
+    // Reset pets and page when filters change
     useEffect(() => {
         setPage(1);
         setPets([]);
+        fetchPets(); // 🟢 refetch immediately on search/filter change
     }, [searchTerm, selectedCategory]);
 
     return (
         <div style={{ padding: "1rem", maxWidth: "1200px", margin: "auto" }}>
             <h1>Available Pets</h1>
 
-            {/* Search and category filter */}
-            <div
-                style={{
-                    display: "flex",
-                    flexWrap: "wrap",
-                    gap: "1rem",
-                    marginBottom: "1rem",
-                }}
-            >
+            {/* Filters */}
+            <div style={{ display: "flex", flexWrap: "wrap", gap: "1rem", marginBottom: "1rem" }}>
                 <input
                     type="text"
                     placeholder="Search by pet name"
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    style={{
-                        flex: "1 1 250px",
-                        padding: "0.5rem",
-                        fontSize: "1rem",
-                    }}
+                    style={{ flex: "1 1 250px", padding: "0.5rem", fontSize: "1rem" }}
                 />
 
                 <select
@@ -114,15 +101,13 @@ const PetListing = () => {
                     <option value="">All Categories</option>
                     {categories.map((cat) => (
                         <option key={cat} value={cat}>
-                            {typeof cat === "string"
-                                ? cat.charAt(0).toUpperCase() + cat.slice(1)
-                                : cat}
+                            {cat.charAt(0).toUpperCase() + cat.slice(1)}
                         </option>
                     ))}
                 </select>
             </div>
 
-            {/* Pets grid */}
+            {/* Grid */}
             <div
                 style={{
                     display: "grid",
@@ -137,10 +122,10 @@ const PetListing = () => {
                             border: "1px solid #ddd",
                             borderRadius: "8px",
                             overflow: "hidden",
-                            boxShadow: "0 2px 5px rgb(0 0 0 / 0.1)",
+                            boxShadow: "0 2px 5px rgba(0, 0, 0, 0.1)",
+                            background: "#fff",
                             display: "flex",
                             flexDirection: "column",
-                            background: "#fff",
                         }}
                     >
                         <img
@@ -149,27 +134,23 @@ const PetListing = () => {
                             style={{ width: "100%", height: "200px", objectFit: "cover" }}
                         />
                         <div style={{ padding: "1rem", flexGrow: 1 }}>
-                            <h3 style={{ margin: "0 0 0.5rem 0" }}>{pet.name}</h3>
-                            <p style={{ margin: "0.25rem 0" }}>
-                                <strong>Age:</strong> {pet.age || "Unknown"}
-                            </p>
-                            <p style={{ margin: "0.25rem 0" }}>
-                                <strong>Location:</strong> {pet.location || "Unknown"}
-                            </p>
+                            <h3 style={{ marginBottom: "0.5rem" }}>{pet.name}</h3>
+                            <p><strong>Age:</strong> {pet.age || "Unknown"}</p>
+                            <p><strong>Location:</strong> {pet.location || "Unknown"}</p>
                         </div>
                         <div style={{ padding: "0 1rem 1rem" }}>
                             <button
+                                onClick={() => navigate(`/petDetails/${pet._id}`)}
                                 style={{
                                     width: "100%",
                                     padding: "0.5rem",
                                     backgroundColor: "#4caf50",
-                                    border: "none",
-                                    color: "white",
+                                    color: "#fff",
                                     fontWeight: "bold",
-                                    cursor: "pointer",
+                                    border: "none",
                                     borderRadius: "4px",
+                                    cursor: "pointer",
                                 }}
-                                onClick={() => navigate(`/petDetails/${pet._id}`)}
                             >
                                 View Details
                             </button>

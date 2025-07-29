@@ -4,7 +4,6 @@ import { useNavigate } from "react-router";
 import Swal from "sweetalert2";
 import axios from "axios";
 
-
 const CreateCampaign = () => {
     const { user } = useContext(AuthContext);
     const navigate = useNavigate();
@@ -14,50 +13,83 @@ const CreateCampaign = () => {
         maxDonation: '',
         lastDate: '',
         shortDescription: '',
-        longDescription: ''
+        longDescription: '',
     });
+
+    const [imageFile, setImageFile] = useState(null);
+    const [isLoading, setIsLoading] = useState(false);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-        setFormData((prev) => ({ ...prev, [name]: value }));
+        setFormData(prev => ({ ...prev, [name]: value }));
+    };
+
+    const handleImageChange = (e) => {
+        setImageFile(e.target.files[0]);
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
 
         if (!user?.email) {
-            Swal.fire('Error', 'User not logged in', 'error');
+            Swal.fire("Error", "You must be logged in to create a campaign.", "error");
             return;
         }
 
-        const payload = {
-            ...formData,
-            userEmail: user.email,
-            maxDonation: parseFloat(formData.maxDonation)
-        };
+        if (!imageFile) {
+            Swal.fire("Error", "Please select a campaign image.", "error");
+            return;
+        }
 
         try {
-            const res = await axios.post('http://localhost:5000/campaigns', payload);
+            setIsLoading(true);
+
+            // Step 1: Upload image to ImgBB
+            const imgForm = new FormData();
+            imgForm.append("image", imageFile);
+
+            const imgRes = await axios.post(
+                `https://api.imgbb.com/1/upload?key=145f5aeaf6a15c67199ff6c3ef4dbd4e`,
+                imgForm
+            );
+
+            const imageUrl = imgRes?.data?.data?.url;
+            if (!imageUrl) throw new Error("Image upload failed");
+
+            // Step 2: Prepare payload
+            const payload = {
+                ...formData,
+                userEmail: user.email,
+                maxDonation: parseFloat(formData.maxDonation),
+                image: imageUrl,
+            };
+
+            // Step 3: Send to backend
+            const res = await axios.post("http://localhost:5000/campaigns", payload);
+
             if (res.status === 201) {
                 Swal.fire({
-                    icon: 'success',
-                    title: 'Success',
-                    text: 'Donation campaign created!',
+                    icon: "success",
+                    title: "Campaign Created",
+                    text: "Your campaign has been successfully created.",
                     timer: 1500,
-                    showConfirmButton: false
+                    showConfirmButton: false,
                 }).then(() => {
-                    navigate('/userDashboard/myCampaigns');
+                    navigate("/userDashboard/myCampaigns");
                 });
             }
         } catch (err) {
-            console.error(err);
-            Swal.fire('Error', 'Something went wrong', 'error');
+            console.error("Error:", err);
+            Swal.fire("Error", "Failed to create campaign. Try again later.", "error");
+        } finally {
+            setIsLoading(false);
         }
     };
 
     return (
         <div className="max-w-3xl mx-auto p-6 bg-white shadow rounded mt-6">
             <h2 className="text-2xl font-bold mb-4">Create Donation Campaign</h2>
+
             <form onSubmit={handleSubmit} className="space-y-4">
                 <div>
                     <label className="block font-semibold">Pet Name</label>
@@ -70,6 +102,7 @@ const CreateCampaign = () => {
                         required
                     />
                 </div>
+
                 <div>
                     <label className="block font-semibold">Max Donation Amount</label>
                     <input
@@ -81,6 +114,7 @@ const CreateCampaign = () => {
                         required
                     />
                 </div>
+
                 <div>
                     <label className="block font-semibold">Last Date of Donation</label>
                     <input
@@ -92,6 +126,7 @@ const CreateCampaign = () => {
                         required
                     />
                 </div>
+
                 <div>
                     <label className="block font-semibold">Short Description</label>
                     <input
@@ -103,6 +138,7 @@ const CreateCampaign = () => {
                         required
                     />
                 </div>
+
                 <div>
                     <label className="block font-semibold">Long Description</label>
                     <textarea
@@ -114,12 +150,25 @@ const CreateCampaign = () => {
                         required
                     />
                 </div>
+
+                <div>
+                    <label className="block font-semibold">Campaign Image</label>
+                    <input
+                        type="file"
+                        accept="image/*"
+                        onChange={handleImageChange}
+                        className="mt-2 block w-full border p-2 rounded"
+                        required
+                    />
+                </div>
+
                 <div className="text-right">
                     <button
                         type="submit"
-                        className="bg-purple-600 hover:bg-purple-700 text-white px-6 py-2 rounded"
+                        disabled={isLoading}
+                        className={`px-6 py-2 rounded text-white ${isLoading ? 'bg-gray-400' : 'bg-purple-600 hover:bg-purple-700'}`}
                     >
-                        Create Campaign
+                        {isLoading ? 'Creating...' : 'Create Campaign'}
                     </button>
                 </div>
             </form>
