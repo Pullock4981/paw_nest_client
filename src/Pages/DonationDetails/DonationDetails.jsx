@@ -1,59 +1,60 @@
-import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router';
-import axios from 'axios';
-import { CardElement, useElements, useStripe } from '@stripe/react-stripe-js';
+import { useContext, useEffect, useState } from "react";
+import { useParams } from "react-router";
+import { AuthContext } from "../../Context/AuthContext";
+import axios from "axios";
 
 const DonationDetails = () => {
-    const { id } = useParams(); // Assuming you use /donationDetails/:id
+    const { id } = useParams();
     const [campaign, setCampaign] = useState(null);
     const [amount, setAmount] = useState('');
+    const [accountNumber, setAccountNumber] = useState('');
     const [modalOpen, setModalOpen] = useState(false);
     const [loading, setLoading] = useState(false);
     const [message, setMessage] = useState('');
     const [recommended, setRecommended] = useState([]);
 
-    const stripe = useStripe();
-    const elements = useElements();
+    const { user } = useContext(AuthContext);
 
     useEffect(() => {
         axios.get(`http://localhost:5000/campaigns/${id}`).then(res => {
             setCampaign(res.data);
         });
 
-        // Load other campaigns
         axios.get('http://localhost:5000/campaigns').then(res => {
             const others = res.data.filter(c => c._id !== id && !c.paused).slice(0, 3);
             setRecommended(others);
         });
     }, [id]);
 
-    const handlePayment = async (e) => {
+    const handleDonation = async (e) => {
         e.preventDefault();
         setLoading(true);
         setMessage('');
 
+        if (!accountNumber || accountNumber.length < 6) {
+            setMessage('Please enter a valid account number');
+            setLoading(false);
+            return;
+        }
+
         try {
-            const { data } = await axios.post('http://localhost:5000/api/payment/create-payment-intent', {
+            // You handle "mock payment" or store data on backend
+            const response = await axios.post(`http://localhost:5000/campaigns/${id}/donate`, {
                 amount: Number(amount),
+                accountNumber,
+                donorEmail: user?.email,
             });
 
-            const clientSecret = data.clientSecret;
-
-            const result = await stripe.confirmCardPayment(clientSecret, {
-                payment_method: {
-                    card: elements.getElement(CardElement),
-                },
-            });
-
-            if (result.error) {
-                setMessage(result.error.message);
-            } else if (result.paymentIntent.status === 'succeeded') {
-                setMessage('🎉 Donation successful!');
-                setAmount('');
-                setModalOpen(false);
-            }
+            setMessage('🎉 Donation successful!');
+            setCampaign(prev => ({
+                ...prev,
+                donatedAmount: (prev.donatedAmount || 0) + Number(amount),
+            }));
+            setAmount('');
+            setAccountNumber('');
+            setModalOpen(false);
         } catch (err) {
-            setMessage('Error processing payment.');
+            setMessage('Error processing donation.');
         }
 
         setLoading(false);
@@ -62,6 +63,7 @@ const DonationDetails = () => {
     if (!campaign) return <p>Loading campaign details...</p>;
 
     const progress = Math.min((campaign.donatedAmount || 0) / campaign.maxDonation * 100, 100).toFixed(1);
+    const isCreator = user?.email === campaign.creatorEmail;
 
     return (
         <div className="max-w-4xl mx-auto p-6">
@@ -82,7 +84,9 @@ const DonationDetails = () => {
 
             <button
                 onClick={() => setModalOpen(true)}
-                className="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700"
+                className="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700 disabled:opacity-50"
+                disabled={isCreator}
+                title={isCreator ? "Campaign creators cannot donate" : ""}
             >
                 Donate Now
             </button>
@@ -92,7 +96,7 @@ const DonationDetails = () => {
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
                     <div className="bg-white p-6 rounded shadow-md w-full max-w-md">
                         <h2 className="text-xl font-semibold mb-4">Enter Donation Details</h2>
-                        <form onSubmit={handlePayment} className="space-y-4">
+                        <form onSubmit={handleDonation} className="space-y-4">
                             <input
                                 type="number"
                                 value={amount}
@@ -101,14 +105,14 @@ const DonationDetails = () => {
                                 className="w-full px-3 py-2 border rounded"
                                 required
                             />
-                            <div className="border p-3 rounded">
-                                <CardElement
-                                    options={{
-                                        style: { base: { fontSize: '16px' } },
-                                        hidePostalCode: true // 👈 hides ZIP
-                                    }}
-                                />
-                            </div>
+                            <input
+                                type="text"
+                                value={accountNumber}
+                                onChange={(e) => setAccountNumber(e.target.value)}
+                                placeholder="Account Number"
+                                className="w-full px-3 py-2 border rounded"
+                                required
+                            />
                             {message && <p className="text-red-500">{message}</p>}
                             <div className="flex justify-end gap-2 mt-4">
                                 <button
@@ -120,7 +124,7 @@ const DonationDetails = () => {
                                 </button>
                                 <button
                                     type="submit"
-                                    disabled={!stripe || loading}
+                                    disabled={loading}
                                     className="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700"
                                 >
                                     {loading ? 'Processing...' : 'Donate'}
@@ -130,26 +134,6 @@ const DonationDetails = () => {
                     </div>
                 </div>
             )}
-
-            {/* Recommended Section */}
-            <div className="mt-10">
-                <h2 className="text-2xl font-semibold mb-4">Recommended Campaigns</h2>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    {recommended.map(c => (
-                        <div key={c._id} className="border rounded p-4 shadow">
-                            <img src={c.petImage} className="h-40 w-full object-cover rounded mb-2" />
-                            <h3 className="text-lg font-bold">{c.petName}</h3>
-                            <p className="text-sm text-gray-600 mb-2">${c.maxDonation}</p>
-                            <button
-                                className="text-purple-600 underline"
-                                onClick={() => window.location.href = `/donationCampain/${c._id}`}
-                            >
-                                View Campaign
-                            </button>
-                        </div>
-                    ))}
-                </div>
-            </div>
         </div>
     );
 };
