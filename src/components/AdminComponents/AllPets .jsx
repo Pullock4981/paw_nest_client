@@ -82,8 +82,8 @@ const AllPets = () => {
                                 <img src={pet.image} alt="pet" className="w-12 h-12 rounded" />
                             </td>
                             <td className="p-3">{pet.name}</td>
-                            <td className="p-3 capitalize">{pet.species}</td>
-                            <td className="p-3">{pet.ownerEmail}</td>
+                            <td className="p-3 capitalize">{pet.category}</td>
+                            <td className="p-3">{pet.userEmail}</td>
                             <td className="p-3">
                                 <span className={`px-2 py-1 rounded text-sm ${pet.adopted ? 'bg-green-200 text-green-800' : 'bg-yellow-200 text-yellow-800'}`}>
                                     {pet.adopted ? 'Adopted' : 'Not Adopted'}

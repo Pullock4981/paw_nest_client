@@ -42,11 +42,8 @@ const MyCampaign = () => {
         navigate(`/userDashboard/editCampaign/${id}`); // ✅ fixed route path
     };
 
-    const handleViewDonators = (donators = []) => {
-        const list = donators.length
-            ? donators.map(d => `👤 ${d.name} - $${d.amount}`).join("\n")
-            : "No donations yet.";
-        alert(list);
+    const handleViewDonators = (campaignId) => {
+        navigate(`/userDashboard/viewDonators/${campaignId}`);
     };
 
     if (loading) return <div className="text-center mt-10">Loading...</div>;
@@ -98,7 +95,7 @@ const MyCampaign = () => {
                                             Edit
                                         </button>
                                         <button
-                                            onClick={() => handleViewDonators(campaign.donators || [])}
+                                            onClick={() => handleViewDonators(campaign._id)}
                                             className="bg-gray-700 text-white px-3 py-1 rounded"
                                         >
                                             View Donators

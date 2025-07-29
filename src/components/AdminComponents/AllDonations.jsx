@@ -80,10 +80,10 @@ const AllDonations = () => {
                             <td className="p-3">
                                 <img src={donation.image} alt="donation" className="w-14 h-14 rounded object-cover" />
                             </td>
-                            <td className="p-3">{donation.title}</td>
-                            <td className="p-3">${donation.goal}</td>
-                            <td className="p-3">${donation.raised || 0}</td>
-                            <td className="p-3">{donation.ownerEmail}</td>
+                            <td className="p-3">{donation.petName}</td>
+                            <td className="p-3">${donation.maxDonation}</td>
+                            <td className="p-3">${donation.donatedAmount || 0}</td>
+                            <td className="p-3">{donation.userEmail}</td>
                             <td className="p-3">
                                 <span className={`px-2 py-1 rounded text-sm ${donation.paused ? 'bg-red-200 text-red-800' : 'bg-green-200 text-green-800'}`}>
                                     {donation.paused ? 'Paused' : 'Active'}

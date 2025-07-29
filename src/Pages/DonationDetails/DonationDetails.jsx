@@ -2,136 +2,89 @@ import { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router";
 import { AuthContext } from "../../Context/AuthContext";
 import axios from "axios";
+import toast from "react-hot-toast";
 
 const DonationDetails = () => {
     const { id } = useParams();
-    const [campaign, setCampaign] = useState(null);
-    const [amount, setAmount] = useState('');
-    const [accountNumber, setAccountNumber] = useState('');
-    const [modalOpen, setModalOpen] = useState(false);
-    const [loading, setLoading] = useState(false);
-    const [message, setMessage] = useState('');
-    const [recommended, setRecommended] = useState([]);
-
     const { user } = useContext(AuthContext);
+    const [campaign, setCampaign] = useState(null);
+    const [amount, setAmount] = useState("");
+    const [accountNumber, setAccountNumber] = useState("");
 
     useEffect(() => {
-        axios.get(`http://localhost:5000/campaigns/${id}`).then(res => {
-            setCampaign(res.data);
-        });
-
-        axios.get('http://localhost:5000/campaigns').then(res => {
-            const others = res.data.filter(c => c._id !== id && !c.paused).slice(0, 3);
-            setRecommended(others);
-        });
+        axios.get(`http://localhost:5000/campaigns/${id}`)
+            .then(res => setCampaign(res.data))
+            .catch(err => toast.error("Failed to load campaign"));
     }, [id]);
 
-    const handleDonation = async (e) => {
-        e.preventDefault();
-        setLoading(true);
-        setMessage('');
+    const handleDonation = async () => {
+        if (!amount || !accountNumber) {
+            toast.error("Please enter amount and account number");
+            return;
+        }
 
-        if (!accountNumber || accountNumber.length < 6) {
-            setMessage('Please enter a valid account number');
-            setLoading(false);
+        if (user?.email === campaign?.userEmail) {
+            toast.error("You cannot donate to your own campaign.");
             return;
         }
 
         try {
-            // You handle "mock payment" or store data on backend
-            const response = await axios.post(`http://localhost:5000/campaigns/${id}/donate`, {
-                amount: Number(amount),
+            const res = await axios.post(`http://localhost:5000/campaigns/${id}/donate`, {
+                amount: parseFloat(amount),
                 accountNumber,
-                donorEmail: user?.email,
+                donorEmail: user.email
             });
 
-            setMessage('🎉 Donation successful!');
-            setCampaign(prev => ({
-                ...prev,
-                donatedAmount: (prev.donatedAmount || 0) + Number(amount),
-            }));
-            setAmount('');
-            setAccountNumber('');
-            setModalOpen(false);
-        } catch (err) {
-            setMessage('Error processing donation.');
+            if (res.status === 200) {
+                toast.success("Donation successful!");
+                // Update local state to reflect new donated amount
+                setCampaign(prev => ({
+                    ...prev,
+                    donatedAmount: (prev.donatedAmount || 0) + parseFloat(amount)
+                }));
+                setAmount("");
+                setAccountNumber("");
+            }
+        } catch (error) {
+            toast.error(error.response?.data?.message || "Donation failed");
         }
-
-        setLoading(false);
     };
 
-    if (!campaign) return <p>Loading campaign details...</p>;
-
-    const progress = Math.min((campaign.donatedAmount || 0) / campaign.maxDonation * 100, 100).toFixed(1);
-    const isCreator = user?.email === campaign.creatorEmail;
+    if (!campaign) return <div>Loading...</div>;
 
     return (
-        <div className="max-w-4xl mx-auto p-6">
-            <h1 className="text-3xl font-bold mb-4">{campaign.petName}'s Donation Campaign</h1>
+        <div className="max-w-xl mx-auto p-6 bg-white shadow rounded">
+            <h2 className="text-2xl font-bold mb-2">{campaign.petName}</h2>
+            <img src={campaign.image} alt={campaign.petName} className="w-full h-60 object-cover rounded mb-4" />
+            <p><strong>Short Description:</strong> {campaign.shortDescription}</p>
+            <p><strong>Goal:</strong> ${campaign.maxDonation}</p>
+            <p><strong>Donated:</strong> ${campaign.donatedAmount || 0}</p>
+            <p><strong>Deadline:</strong> {new Date(campaign.lastDate).toLocaleDateString()}</p>
 
-            <img src={campaign.image} className="w-full h-64 object-cover rounded mb-4" alt="Pet" />
-
-            <p className="mb-2"><strong>Goal:</strong> ${campaign.maxDonation}</p>
-            <p className="mb-2"><strong>Donated:</strong> ${campaign.donatedAmount || 0}</p>
-
-            <div className="bg-gray-200 h-4 rounded-full overflow-hidden mb-4">
-                <div className="bg-purple-600 h-4" style={{ width: `${progress}%` }}></div>
-            </div>
-
-            <p className="mb-4 text-sm text-gray-600">{progress}% funded</p>
-
-            <p className="mb-6">{campaign.longDescription}</p>
-
-            <button
-                onClick={() => setModalOpen(true)}
-                className="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700 disabled:opacity-50"
-                disabled={isCreator}
-                title={isCreator ? "Campaign creators cannot donate" : ""}
-            >
-                Donate Now
-            </button>
-
-            {/* Modal */}
-            {modalOpen && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-                    <div className="bg-white p-6 rounded shadow-md w-full max-w-md">
-                        <h2 className="text-xl font-semibold mb-4">Enter Donation Details</h2>
-                        <form onSubmit={handleDonation} className="space-y-4">
-                            <input
-                                type="number"
-                                value={amount}
-                                onChange={(e) => setAmount(e.target.value)}
-                                placeholder="Amount in USD"
-                                className="w-full px-3 py-2 border rounded"
-                                required
-                            />
-                            <input
-                                type="text"
-                                value={accountNumber}
-                                onChange={(e) => setAccountNumber(e.target.value)}
-                                placeholder="Account Number"
-                                className="w-full px-3 py-2 border rounded"
-                                required
-                            />
-                            {message && <p className="text-red-500">{message}</p>}
-                            <div className="flex justify-end gap-2 mt-4">
-                                <button
-                                    type="button"
-                                    onClick={() => setModalOpen(false)}
-                                    className="px-4 py-2 border rounded"
-                                >
-                                    Cancel
-                                </button>
-                                <button
-                                    type="submit"
-                                    disabled={loading}
-                                    className="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700"
-                                >
-                                    {loading ? 'Processing...' : 'Donate'}
-                                </button>
-                            </div>
-                        </form>
-                    </div>
+            {user?.email === campaign.userEmail ? (
+                <p className="mt-4 text-red-600 font-semibold">You cannot donate to your own campaign.</p>
+            ) : (
+                <div className="mt-4 space-y-2">
+                    <input
+                        type="number"
+                        placeholder="Enter amount"
+                        value={amount}
+                        onChange={(e) => setAmount(e.target.value)}
+                        className="w-full p-2 border rounded"
+                    />
+                    <input
+                        type="text"
+                        placeholder="Account Number"
+                        value={accountNumber}
+                        onChange={(e) => setAccountNumber(e.target.value)}
+                        className="w-full p-2 border rounded"
+                    />
+                    <button
+                        onClick={handleDonation}
+                        className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+                    >
+                        Donate Now
+                    </button>
                 </div>
             )}
         </div>

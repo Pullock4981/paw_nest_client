@@ -23,6 +23,7 @@ import AdminDashboardHome from '../components/AdminComponents/AdminDashboardHome
 import AllUsers from '../components/AdminComponents/AllUsers';
 import AllPets from '../components/AdminComponents/AllPets ';
 import AllDonations from '../components/AdminComponents/AllDonations';
+import ViewDonators from '../components/UserComponents/ViewDonators';
 
 const router = createBrowserRouter([
     {
@@ -71,6 +72,7 @@ const router = createBrowserRouter([
             { path: "createCampaign", Component: CreateCampaign },
             { path: "editCampaign/:id", Component: EditCampaign },
             { path: "myCampaigns", Component: MyCampaign },
+            { path: "viewDonators/:campaignId", Component: ViewDonators },
             { path: "myDonations", Component: MyDonation },
             { path: "updatePet/:id", Component: UpdatePet },
         ]
