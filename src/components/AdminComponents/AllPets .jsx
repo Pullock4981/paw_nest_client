@@ -5,7 +5,7 @@ const AllPets = () => {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        fetch('http://localhost:5000/pets') // Replace with your actual backend route
+        fetch('https://pet-adoption-server-wheat.vercel.app/pets') // Replace with your actual backend route
             .then(res => res.json())
             .then(data => {
                 setPets(data);
@@ -22,7 +22,7 @@ const AllPets = () => {
         if (!confirm) return;
 
         try {
-            const res = await fetch(`http://localhost:5000/pets/${id}`, {
+            const res = await fetch(`https://pet-adoption-server-wheat.vercel.app/pets/${id}`, {
                 method: 'DELETE',
             });
             if (res.ok) {
@@ -35,7 +35,7 @@ const AllPets = () => {
 
     const handleStatusToggle = async (id, currentStatus) => {
         try {
-            const res = await fetch(`http://localhost:5000/pets/${id}/status`, {
+            const res = await fetch(`https://pet-adoption-server-wheat.vercel.app/pets/${id}/status`, {
                 method: 'PATCH',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ adopted: !currentStatus }),

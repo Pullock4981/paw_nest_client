@@ -20,7 +20,7 @@ const EditCampaign = () => {
     useEffect(() => {
         const fetchCampaign = async () => {
             try {
-                const res = await axios.get(`http://localhost:5000/campaigns/${id}`);
+                const res = await axios.get(`https://pet-adoption-server-wheat.vercel.app/campaigns/${id}`);
                 const data = res.data;
                 setFormData({
                     petName: data.petName,
@@ -54,7 +54,7 @@ const EditCampaign = () => {
         };
 
         try {
-            const res = await axios.put(`http://localhost:5000/campaigns/${id}`, payload);
+            const res = await axios.put(`https://pet-adoption-server-wheat.vercel.app/campaigns/${id}`, payload);
             if (res.status === 200) {
                 Swal.fire({
                     icon: 'success',

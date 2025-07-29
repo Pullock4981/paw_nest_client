@@ -3,7 +3,6 @@ import { AuthContext } from "../../Context/AuthContext";
 import { useNavigate } from "react-router";
 import axios from "axios";
 
-
 const MyCampaign = () => {
     const [campaigns, setCampaigns] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -13,7 +12,7 @@ const MyCampaign = () => {
     useEffect(() => {
         const fetchCampaigns = async () => {
             try {
-                const res = await axios.get("http://localhost:5000/campaigns", {
+                const res = await axios.get("https://pet-adoption-server-wheat.vercel.app/campaigns", {
                     params: { email: user.email },
                 });
                 setCampaigns(res.data);
@@ -29,7 +28,9 @@ const MyCampaign = () => {
 
     const handlePauseToggle = async (id, paused) => {
         try {
-            await axios.patch(`http://localhost:5000/campaigns/${id}`, { paused: !paused });
+            await axios.patch(`https://pet-adoption-server-wheat.vercel.app/campaigns/${id}`, {
+                paused: !paused,
+            });
             setCampaigns(prev =>
                 prev.map(c => (c._id === id ? { ...c, paused: !paused } : c))
             );
@@ -39,7 +40,7 @@ const MyCampaign = () => {
     };
 
     const handleEdit = (id) => {
-        navigate(`/userDashboard/editCampaign/${id}`); // ✅ fixed route path
+        navigate(`/userDashboard/editCampaign/${id}`);
     };
 
     const handleViewDonators = (campaignId) => {
@@ -49,63 +50,68 @@ const MyCampaign = () => {
     if (loading) return <div className="text-center mt-10">Loading...</div>;
 
     return (
-        <div className="max-w-5xl mx-auto mt-10 p-4">
+        <div className="max-w-6xl mx-auto mt-10 p-4">
             <h2 className="text-3xl font-bold mb-6 text-center">My Donation Campaigns</h2>
-            {campaigns.length === 0 ? (
-                <div className="text-center text-gray-600">You haven't created any donation campaigns.</div>
-            ) : (
-                <table className="w-full border rounded shadow">
-                    <thead className="bg-gray-200">
-                        <tr>
-                            <th className="p-3 text-left">Pet Name</th>
-                            <th className="p-3 text-left">Max Donation</th>
-                            <th className="p-3">Progress</th>
-                            <th className="p-3">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {campaigns.map((campaign) => {
-                            const progress =
-                                Math.min((campaign.donatedAmount || 0) / campaign.maxDonation, 1) * 100;
 
-                            return (
-                                <tr key={campaign._id} className="border-t">
-                                    <td className="p-3">{campaign.petName}</td>
-                                    <td className="p-3">${campaign.maxDonation}</td>
-                                    <td className="p-3 w-1/3">
-                                        <div className="w-full bg-gray-300 rounded-full h-4">
-                                            <div
-                                                className="bg-purple-600 h-4 rounded-full"
-                                                style={{ width: `${progress}%` }}
-                                            ></div>
-                                        </div>
-                                        <div className="text-sm text-right mt-1">{progress.toFixed(1)}%</div>
-                                    </td>
-                                    <td className="p-3 space-x-2">
-                                        <button
-                                            onClick={() => handlePauseToggle(campaign._id, campaign.paused)}
-                                            className={`px-3 py-1 rounded text-white ${campaign.paused ? "bg-yellow-500" : "bg-red-500"}`}
-                                        >
-                                            {campaign.paused ? "Unpause" : "Pause"}
-                                        </button>
-                                        <button
-                                            onClick={() => handleEdit(campaign._id)}
-                                            className="bg-blue-600 text-white px-3 py-1 rounded"
-                                        >
-                                            Edit
-                                        </button>
-                                        <button
-                                            onClick={() => handleViewDonators(campaign._id)}
-                                            className="bg-gray-700 text-white px-3 py-1 rounded"
-                                        >
-                                            View Donators
-                                        </button>
-                                    </td>
-                                </tr>
-                            );
-                        })}
-                    </tbody>
-                </table>
+            {campaigns.length === 0 ? (
+                <div className="text-center text-gray-600">
+                    You haven't created any donation campaigns.
+                </div>
+            ) : (
+                <div className="overflow-x-auto">
+                    <table className="min-w-[800px] w-full border rounded shadow bg-white">
+                        <thead className="bg-gray-200">
+                            <tr>
+                                <th className="p-3 text-left whitespace-nowrap">Pet Name</th>
+                                <th className="p-3 text-left whitespace-nowrap">Max Donation</th>
+                                <th className="p-3 whitespace-nowrap">Progress</th>
+                                <th className="p-3 whitespace-nowrap">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {campaigns.map((campaign) => {
+                                const progress =
+                                    Math.min((campaign.donatedAmount || 0) / campaign.maxDonation, 1) * 100;
+
+                                return (
+                                    <tr key={campaign._id} className="border-t">
+                                        <td className="p-3">{campaign.petName}</td>
+                                        <td className="p-3">${campaign.maxDonation}</td>
+                                        <td className="p-3 w-1/3">
+                                            <div className="w-full bg-gray-300 rounded-full h-4">
+                                                <div
+                                                    className="bg-purple-600 h-4 rounded-full"
+                                                    style={{ width: `${progress}%` }}
+                                                ></div>
+                                            </div>
+                                            <div className="text-sm text-right mt-1">{progress.toFixed(1)}%</div>
+                                        </td>
+                                        <td className="p-3 space-x-2 whitespace-nowrap">
+                                            <button
+                                                onClick={() => handlePauseToggle(campaign._id, campaign.paused)}
+                                                className={`px-3 py-1 rounded text-white ${campaign.paused ? "bg-yellow-500" : "bg-red-500"}`}
+                                            >
+                                                {campaign.paused ? "Unpause" : "Pause"}
+                                            </button>
+                                            <button
+                                                onClick={() => handleEdit(campaign._id)}
+                                                className="bg-blue-600 text-white px-3 py-1 rounded"
+                                            >
+                                                Edit
+                                            </button>
+                                            <button
+                                                onClick={() => handleViewDonators(campaign._id)}
+                                                className="bg-gray-700 text-white px-3 py-1 rounded"
+                                            >
+                                                View Donators
+                                            </button>
+                                        </td>
+                                    </tr>
+                                );
+                            })}
+                        </tbody>
+                    </table>
+                </div>
             )}
         </div>
     );

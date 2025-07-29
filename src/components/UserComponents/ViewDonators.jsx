@@ -10,7 +10,7 @@ const ViewDonators = () => {
     useEffect(() => {
         const fetchDonators = async () => {
             try {
-                const res = await axios.get(`http://localhost:5000/campaigns/${campaignId}/donators`);
+                const res = await axios.get(`https://pet-adoption-server-wheat.vercel.app/campaigns/${campaignId}/donators`);
                 setDonators(res.data || []);
             } catch (err) {
                 console.error("Error fetching donators:", err);

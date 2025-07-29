@@ -8,7 +8,7 @@ const AllUsers = () => {
     useEffect(() => {
         const fetchUsers = async () => {
             try {
-                const res = await fetch("http://localhost:5000/users");
+                const res = await fetch("https://pet-adoption-server-wheat.vercel.app/users");
                 const data = await res.json();
                 setUsers(data);
             } catch (error) {
@@ -24,7 +24,7 @@ const AllUsers = () => {
     // Make a user admin
     const handleMakeAdmin = async (email) => {
         try {
-            const res = await fetch(`http://localhost:5000/users/${email}/make-admin`, {
+            const res = await fetch(`https://pet-adoption-server-wheat.vercel.app/users/${email}/make-admin`, {
                 method: "PATCH",
             });
             if (res.ok) {
@@ -43,7 +43,7 @@ const AllUsers = () => {
     // Optional: Ban a user
     const handleBanUser = async (email) => {
         try {
-            const res = await fetch(`http://localhost:5000/users/${email}/ban`, {
+            const res = await fetch(`https://pet-adoption-server-wheat.vercel.app/users/${email}/ban`, {
                 method: "PATCH",
             });
             if (res.ok) {

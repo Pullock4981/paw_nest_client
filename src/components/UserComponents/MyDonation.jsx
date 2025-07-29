@@ -11,7 +11,7 @@ const MyDonation = () => {
     useEffect(() => {
         const fetchDonations = async () => {
             try {
-                const res = await axios.get("http://localhost:5000/donations", {
+                const res = await axios.get("https://pet-adoption-server-wheat.vercel.app/donations", {
                     params: { email: user.email }
                 });
                 setDonations(res.data || []);
@@ -37,7 +37,7 @@ const MyDonation = () => {
 
         if (confirm.isConfirmed) {
             try {
-                await axios.delete(`http://localhost:5000/donations/${donationId}`);
+                await axios.delete(`https://pet-adoption-server-wheat.vercel.app/donations/${donationId}`);
                 setDonations(prev => prev.filter(d => d._id !== donationId));
                 Swal.fire("Refunded!", "Your donation has been removed.", "success");
             } catch (err) {

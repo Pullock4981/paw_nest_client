@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router";
+import { motion } from "framer-motion";
 
 const PetListing = () => {
     const [pets, setPets] = useState([]);
@@ -16,32 +17,19 @@ const PetListing = () => {
     const fetchPets = useCallback(async () => {
         setLoading(true);
         try {
-            let url = `http://localhost:5000/pets?adopted=false&page=${page}&limit=${limit}`;
-
-            if (searchTerm.trim()) {
-                url += `&search=${encodeURIComponent(searchTerm.trim())}`;
-            }
-
-            if (selectedCategory) {
-                url += `&category=${encodeURIComponent(selectedCategory)}`;
-            }
+            let url = `https://pet-adoption-server-wheat.vercel.app/pets?adopted=false&page=${page}&limit=${limit}`;
+            if (searchTerm.trim()) url += `&search=${encodeURIComponent(searchTerm.trim())}`;
+            if (selectedCategory) url += `&category=${encodeURIComponent(selectedCategory)}`;
 
             const response = await fetch(url);
             if (!response.ok) throw new Error("Failed to fetch pets");
             const data = await response.json();
 
-            setPets((prev) => (page === 1 ? data : [...prev, ...data]));
+            setPets(prev => (page === 1 ? data : [...prev, ...data]));
             setHasMore(data.length === limit);
 
-            // Only extract categories when page is 1
             if (page === 1) {
-                const uniqueCategories = [
-                    ...new Set(
-                        data
-                            .map((p) => p.category)
-                            .filter((cat) => typeof cat === "string" && cat.trim() !== "")
-                    ),
-                ];
+                const uniqueCategories = [...new Set(data.map(p => p.category).filter(Boolean))];
                 setCategories(uniqueCategories);
             }
         } catch (err) {
@@ -51,117 +39,87 @@ const PetListing = () => {
         }
     }, [page, searchTerm, selectedCategory]);
 
-    // Initial + paginated load
-    useEffect(() => {
-        fetchPets();
-    }, [fetchPets]);
+    useEffect(() => { fetchPets(); }, [fetchPets]);
 
-    // Infinite scroll handler
     useEffect(() => {
         const handleScroll = () => {
             if (
                 window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 300 &&
                 !loading &&
                 hasMore
-            ) {
-                setPage((prev) => prev + 1);
-            }
+            ) setPage(prev => prev + 1);
         };
-
         window.addEventListener("scroll", handleScroll);
         return () => window.removeEventListener("scroll", handleScroll);
     }, [loading, hasMore]);
 
-    // Reset pets and page when filters change
     useEffect(() => {
         setPage(1);
         setPets([]);
-        fetchPets(); // 🟢 refetch immediately on search/filter change
+        fetchPets();
     }, [searchTerm, selectedCategory]);
 
     return (
-        <div style={{ padding: "1rem", maxWidth: "1200px", margin: "auto" }}>
-            <h1>Available Pets</h1>
+        <div className="max-w-7xl mx-auto px-4 py-10 sm:py-12">
+            <h1 className="text-3xl font-bold text-center mb-8">🐾 Available Pets for Adoption</h1>
 
-            {/* Filters */}
-            <div style={{ display: "flex", flexWrap: "wrap", gap: "1rem", marginBottom: "1rem" }}>
+            <div className="flex flex-wrap gap-4 justify-center mb-6">
                 <input
                     type="text"
-                    placeholder="Search by pet name"
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    style={{ flex: "1 1 250px", padding: "0.5rem", fontSize: "1rem" }}
+                    placeholder="Search by name"
+                    className="px-4 py-2 border rounded w-64"
                 />
-
                 <select
                     value={selectedCategory}
                     onChange={(e) => setSelectedCategory(e.target.value)}
-                    style={{ padding: "0.5rem", fontSize: "1rem" }}
+                    className="px-4 py-2 border rounded w-64"
                 >
                     <option value="">All Categories</option>
-                    {categories.map((cat) => (
-                        <option key={cat} value={cat}>
-                            {cat.charAt(0).toUpperCase() + cat.slice(1)}
-                        </option>
+                    {categories.map(cat => (
+                        <option key={cat} value={cat}>{cat}</option>
                     ))}
                 </select>
             </div>
 
-            {/* Grid */}
-            <div
-                style={{
-                    display: "grid",
-                    gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
-                    gap: "1rem",
-                }}
-            >
-                {pets.map((pet) => (
-                    <div
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                {pets.map((pet, index) => (
+                    <motion.div
                         key={pet._id}
-                        style={{
-                            border: "1px solid #ddd",
-                            borderRadius: "8px",
-                            overflow: "hidden",
-                            boxShadow: "0 2px 5px rgba(0, 0, 0, 0.1)",
-                            background: "#fff",
-                            display: "flex",
-                            flexDirection: "column",
-                        }}
+                        initial={{ opacity: 0, y: 30 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: index * 0.05 }}
+                        className="bg-white rounded-xl shadow-md overflow-hidden flex flex-col hover:shadow-lg transition-shadow duration-300"
                     >
                         <img
-                            src={pet.image || "https://via.placeholder.com/300x200?text=No+Image"}
+                            src={pet.image || "https://via.placeholder.com/400x300?text=No+Image"}
                             alt={pet.name}
-                            style={{ width: "100%", height: "200px", objectFit: "cover" }}
+                            className="h-40 w-full object-cover"
                         />
-                        <div style={{ padding: "1rem", flexGrow: 1 }}>
-                            <h3 style={{ marginBottom: "0.5rem" }}>{pet.name}</h3>
-                            <p><strong>Age:</strong> {pet.age || "Unknown"}</p>
-                            <p><strong>Location:</strong> {pet.location || "Unknown"}</p>
-                        </div>
-                        <div style={{ padding: "0 1rem 1rem" }}>
+                        <div className="p-4 flex flex-col justify-between flex-grow">
+                            <div>
+                                <h2 className="text-xl font-semibold mb-1">{pet.name}</h2>
+                                <p className="text-gray-700"><strong>Age:</strong> {pet.age || "Unknown"}</p>
+                                <p className="text-gray-700"><strong>Location:</strong> {pet.location || "Unknown"}</p>
+                            </div>
                             <button
                                 onClick={() => navigate(`/petDetails/${pet._id}`)}
-                                style={{
-                                    width: "100%",
-                                    padding: "0.5rem",
-                                    backgroundColor: "#4caf50",
-                                    color: "#fff",
-                                    fontWeight: "bold",
-                                    border: "none",
-                                    borderRadius: "4px",
-                                    cursor: "pointer",
-                                }}
+                                className="mt-4 bg-purple-600 text-white w-full py-2 rounded hover:bg-purple-700 transition duration-200"
                             >
                                 View Details
                             </button>
                         </div>
-                    </div>
+                    </motion.div>
                 ))}
             </div>
 
-            {loading && <p style={{ textAlign: "center", marginTop: "1rem" }}>Loading...</p>}
+            {loading && (
+                <div className="text-center mt-6 text-gray-500">Loading more pets...</div>
+            )}
+
             {!hasMore && !loading && pets.length > 0 && (
-                <p style={{ textAlign: "center", marginTop: "1rem" }}>No more pets to show</p>
+                <div className="text-center mt-6 text-gray-500">No more pets to show.</div>
             )}
         </div>
     );

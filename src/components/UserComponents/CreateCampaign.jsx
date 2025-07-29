@@ -44,7 +44,6 @@ const CreateCampaign = () => {
         try {
             setIsLoading(true);
 
-            // Step 1: Upload image to ImgBB
             const imgForm = new FormData();
             imgForm.append("image", imageFile);
 
@@ -56,7 +55,6 @@ const CreateCampaign = () => {
             const imageUrl = imgRes?.data?.data?.url;
             if (!imageUrl) throw new Error("Image upload failed");
 
-            // Step 2: Prepare payload
             const payload = {
                 ...formData,
                 userEmail: user.email,
@@ -64,8 +62,7 @@ const CreateCampaign = () => {
                 image: imageUrl,
             };
 
-            // Step 3: Send to backend
-            const res = await axios.post("http://localhost:5000/campaigns", payload);
+            const res = await axios.post("https://pet-adoption-server-wheat.vercel.app/campaigns", payload);
 
             if (res.status === 201) {
                 Swal.fire({
@@ -87,77 +84,83 @@ const CreateCampaign = () => {
     };
 
     return (
-        <div className="max-w-3xl mx-auto p-6 bg-white shadow rounded mt-6">
-            <h2 className="text-2xl font-bold mb-4">Create Donation Campaign</h2>
+        <div className="max-w-4xl mx-auto p-6 bg-white shadow rounded mt-6">
+            <h2 className="text-2xl font-bold mb-6 text-[#865B97] text-center">Create Donation Campaign</h2>
 
-            <form onSubmit={handleSubmit} className="space-y-4">
+            <form onSubmit={handleSubmit} className="space-y-3">
+
+                {/* Image Upload */}
                 <div>
-                    <label className="block font-semibold">Pet Name</label>
+                    <label className="block font-semibold mb-1">Campaign Image</label>
                     <input
-                        type="text"
-                        name="petName"
-                        value={formData.petName}
-                        onChange={handleChange}
-                        className="mt-2 block w-full border p-2 rounded"
+                        type="file"
+                        accept="image/*"
+                        onChange={handleImageChange}
+                        className="block w-full border p-2 rounded"
                         required
                     />
                 </div>
 
-                <div>
-                    <label className="block font-semibold">Max Donation Amount</label>
-                    <input
-                        type="number"
-                        name="maxDonation"
-                        value={formData.maxDonation}
-                        onChange={handleChange}
-                        className="mt-2 block w-full border p-2 rounded"
-                        required
-                    />
+                {/* 3-column grid */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div>
+                        <label className="block font-semibold mb-1">Pet Name</label>
+                        <input
+                            type="text"
+                            name="petName"
+                            value={formData.petName}
+                            onChange={handleChange}
+                            className="w-full border p-2 rounded"
+                            required
+                        />
+                    </div>
+                    <div>
+                        <label className="block font-semibold mb-1">Max Donation Amount</label>
+                        <input
+                            type="number"
+                            name="maxDonation"
+                            value={formData.maxDonation}
+                            onChange={handleChange}
+                            className="w-full border p-2 rounded"
+                            required
+                        />
+                    </div>
+                    <div>
+                        <label className="block font-semibold mb-1">Short Description</label>
+                        <input
+                            type="text"
+                            name="shortDescription"
+                            value={formData.shortDescription}
+                            onChange={handleChange}
+                            className="w-full border p-2 rounded"
+                            required
+                        />
+                    </div>
                 </div>
 
+                {/* Long Description */}
                 <div>
-                    <label className="block font-semibold">Last Date of Donation</label>
-                    <input
-                        type="date"
-                        name="lastDate"
-                        value={formData.lastDate}
-                        onChange={handleChange}
-                        className="mt-2 block w-full border p-2 rounded"
-                        required
-                    />
-                </div>
-
-                <div>
-                    <label className="block font-semibold">Short Description</label>
-                    <input
-                        type="text"
-                        name="shortDescription"
-                        value={formData.shortDescription}
-                        onChange={handleChange}
-                        className="mt-2 block w-full border p-2 rounded"
-                        required
-                    />
-                </div>
-
-                <div>
-                    <label className="block font-semibold">Long Description</label>
+                    <label className="block font-semibold mb-1">Long Description</label>
                     <textarea
                         name="longDescription"
                         rows="4"
                         value={formData.longDescription}
                         onChange={handleChange}
-                        className="mt-2 block w-full border p-2 rounded"
+                        className="w-full border p-2 rounded"
+                        placeholder="More details about the pet or campaign..."
                         required
                     />
                 </div>
 
+                {/* Date */}
                 <div>
-                    <label className="block font-semibold">Campaign Image</label>
+                    <label className="block font-semibold mb-1">Last Date of Donation</label>
                     <input
-                        type="file"
-                        accept="image/*"
-                        onChange={handleImageChange}
-                        className="mt-2 block w-full border p-2 rounded"
+                        type="date"
+                        name="lastDate"
+                        value={formData.lastDate}
+                        onChange={handleChange}
+                        className="w-full border p-2 rounded"
                         required
                     />
                 </div>
@@ -166,7 +169,7 @@ const CreateCampaign = () => {
                     <button
                         type="submit"
                         disabled={isLoading}
-                        className={`px-6 py-2 rounded text-white ${isLoading ? 'bg-gray-400' : 'bg-purple-600 hover:bg-purple-700'}`}
+                        className={`px-6 py-2 rounded text-white ${isLoading ? 'bg-gray-400' : 'bg-[#865B97] hover:bg-purple-700'}`}
                     >
                         {isLoading ? 'Creating...' : 'Create Campaign'}
                     </button>

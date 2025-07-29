@@ -3,6 +3,7 @@ import { useParams } from "react-router";
 import { AuthContext } from "../../Context/AuthContext";
 import Modal from "react-modal";
 import Swal from "sweetalert2";
+import { motion } from "framer-motion";
 
 const PetDetails = () => {
     const { id } = useParams();
@@ -17,20 +18,19 @@ const PetDetails = () => {
     useEffect(() => {
         const fetchPet = async () => {
             try {
-                const res = await fetch(`http://localhost:5000/pets/${id}`);
+                const res = await fetch(`https://pet-adoption-server-wheat.vercel.app/pets/${id}`);
                 const data = await res.json();
                 setPet(data);
 
-                // Check if current user already sent a request
                 if (user?.email && data?._id) {
                     const reqRes = await fetch(
-                        `http://localhost:5000/adoptionRequests/check?petId=${data._id}&email=${user.email}`
+                        `https://pet-adoption-server-wheat.vercel.app/adoptionRequests/check?petId=${data._id}&email=${user.email}`
                     );
                     const reqData = await reqRes.json();
                     setHasRequested(reqData.exists);
                 }
             } catch (err) {
-                console.error("Failed to fetch pet or request info:", err);
+                console.error("Failed to fetch pet:", err);
             }
         };
 
@@ -39,7 +39,6 @@ const PetDetails = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-
         if (!phone || !address) {
             Swal.fire("Error", "Phone and address are required.", "error");
             return;
@@ -68,7 +67,7 @@ const PetDetails = () => {
 
         setLoading(true);
         try {
-            const res = await fetch("http://localhost:5000/adoptionRequests", {
+            const res = await fetch("https://pet-adoption-server-wheat.vercel.app/adoptionRequests", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(adoptionData),
@@ -79,79 +78,102 @@ const PetDetails = () => {
                 setIsModalOpen(false);
                 setPhone("");
                 setAddress("");
-                setHasRequested(true); // Update immediately
+                setHasRequested(true);
             } else {
-                Swal.fire("Error", "Request failed. Please try again.", "error");
+                Swal.fire("Error", "Request failed. Try again.", "error");
             }
-        } catch (error) {
-            console.error("Adoption error:", error);
-            Swal.fire("Error", "Network or server error.", "error");
+        } catch (err) {
+            console.error("Adoption error:", err);
+            Swal.fire("Error", "Network error.", "error");
         } finally {
             setLoading(false);
         }
     };
 
-    if (!pet) return <div>Loading...</div>;
+    if (!pet) return <div className="text-center py-8">Loading...</div>;
 
     const isOwner = pet.userEmail === user?.email;
 
     return (
-        <div className="max-w-2xl mx-auto p-4">
-            <h2 className="text-2xl font-bold">{pet.name}</h2>
-            <img src={pet.image || "https://via.placeholder.com/300"} alt={pet.name} className="w-full h-64 object-cover rounded mt-2" />
-            <p><strong>Age:</strong> {pet.age}</p>
-            <p><strong>Category:</strong> {pet.category}</p>
-            <p><strong>Location:</strong> {pet.location}</p>
-            <p>{pet.description}</p>
+        <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            className="max-w-3xl mx-auto p-6 sm:p-8"
+        >
+            <h2 className="text-3xl font-bold mb-4 text-center">{pet.name}</h2>
 
-            <button
-                onClick={() => setIsModalOpen(true)}
-                className="mt-4 bg-green-600 text-white px-4 py-2 rounded disabled:opacity-60"
-                disabled={isOwner || hasRequested}
+            <img
+                src={pet.image || "https://via.placeholder.com/400x300"}
+                alt={pet.name}
+                className="w-full h-72 sm:h-96 object-cover rounded-lg shadow-md mb-6"
+            />
+
+            <div className="space-y-2 text-gray-700">
+                <p><strong>Age:</strong> {pet.age}</p>
+                <p><strong>Category:</strong> {pet.category}</p>
+                <p><strong>Location:</strong> {pet.location}</p>
+                <p><strong>Description:</strong> {pet.description}</p>
+            </div>
+
+            <div className="mt-6 text-center">
+                <button
+                    onClick={() => setIsModalOpen(true)}
+                    className="bg-green-600 hover:bg-green-700 text-white font-semibold px-6 py-2 rounded disabled:opacity-50 transition"
+                    disabled={isOwner || hasRequested}
+                >
+                    {isOwner ? "You own this pet" : hasRequested ? "Already Requested" : "Adopt"}
+                </button>
+            </div>
+
+            <Modal
+                isOpen={isModalOpen}
+                onRequestClose={() => setIsModalOpen(false)}
+                className="bg-white max-w-lg w-[90%] mx-auto mt-24 p-6 rounded-lg shadow-xl outline-none"
+                overlayClassName="fixed inset-0 bg-black bg-opacity-40 z-50 flex justify-center items-start overflow-y-auto"
+                ariaHideApp={false}
             >
-                {isOwner
-                    ? "You own this pet"
-                    : hasRequested
-                        ? "Already Requested"
-                        : "Adopt"}
-            </button>
-
-            <Modal isOpen={isModalOpen} onRequestClose={() => setIsModalOpen(false)} ariaHideApp={false}>
                 <h2 className="text-xl font-bold mb-4">Adopt {pet.name}</h2>
                 <form onSubmit={handleSubmit} className="space-y-4">
                     <div>
-                        <label>Your Name</label>
-                        <input value={user?.displayName} disabled className="block w-full border p-2 rounded" />
+                        <label className="block mb-1 text-sm">Your Name</label>
+                        <input value={user?.displayName} disabled className="w-full border p-2 rounded bg-gray-100" />
                     </div>
                     <div>
-                        <label>Email</label>
-                        <input value={user?.email} disabled className="block w-full border p-2 rounded" />
+                        <label className="block mb-1 text-sm">Email</label>
+                        <input value={user?.email} disabled className="w-full border p-2 rounded bg-gray-100" />
                     </div>
                     <div>
-                        <label>Phone</label>
+                        <label className="block mb-1 text-sm">Phone</label>
                         <input
                             type="text"
                             value={phone}
                             onChange={(e) => setPhone(e.target.value)}
                             required
-                            className="block w-full border p-2 rounded"
+                            className="w-full border p-2 rounded"
                         />
                     </div>
                     <div>
-                        <label>Address</label>
+                        <label className="block mb-1 text-sm">Address</label>
                         <textarea
                             value={address}
                             onChange={(e) => setAddress(e.target.value)}
                             required
-                            className="block w-full border p-2 rounded"
+                            className="w-full border p-2 rounded"
                         />
                     </div>
-                    <button type="submit" disabled={loading} className="bg-blue-600 text-white px-4 py-2 rounded">
-                        {loading ? "Submitting..." : "Submit Request"}
-                    </button>
+                    <div className="text-right">
+                        <button
+                            type="submit"
+                            disabled={loading}
+                            className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 py-2 rounded transition"
+                        >
+                            {loading ? "Submitting..." : "Submit Request"}
+                        </button>
+                    </div>
                 </form>
             </Modal>
-        </div>
+        </motion.div>
     );
 };
 

@@ -34,7 +34,7 @@ const UpdatePet = () => {
     useEffect(() => {
         const fetchPet = async () => {
             try {
-                const res = await fetch(`http://localhost:5000/pets/${id}`);
+                const res = await fetch(`https://pet-adoption-server-wheat.vercel.app/pets/${id}`);
                 const data = await res.json();
 
                 setInitialValues({
@@ -57,7 +57,7 @@ const UpdatePet = () => {
     // 🧠 Submit handler
     const handleSubmit = async (values) => {
         try {
-            const res = await fetch(`http://localhost:5000/pets/${id}`, {
+            const res = await fetch(`https://pet-adoption-server-wheat.vercel.app/pets/${id}`, {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({

@@ -12,7 +12,7 @@ const DonationDetails = () => {
     const [accountNumber, setAccountNumber] = useState("");
 
     useEffect(() => {
-        axios.get(`http://localhost:5000/campaigns/${id}`)
+        axios.get(`https://pet-adoption-server-wheat.vercel.app/campaigns/${id}`)
             .then(res => setCampaign(res.data))
             .catch(err => toast.error("Failed to load campaign"));
     }, [id]);
@@ -29,7 +29,7 @@ const DonationDetails = () => {
         }
 
         try {
-            const res = await axios.post(`http://localhost:5000/campaigns/${id}/donate`, {
+            const res = await axios.post(`https://pet-adoption-server-wheat.vercel.app/campaigns/${id}/donate`, {
                 amount: parseFloat(amount),
                 accountNumber,
                 donorEmail: user.email

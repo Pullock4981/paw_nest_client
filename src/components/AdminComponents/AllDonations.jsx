@@ -5,7 +5,7 @@ const AllDonations = () => {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        fetch('http://localhost:5000/campaigns') // Replace with your backend URL
+        fetch('https://pet-adoption-server-wheat.vercel.app/campaigns') // Replace with your backend URL
             .then(res => res.json())
             .then(data => {
                 setDonations(data);
@@ -21,7 +21,7 @@ const AllDonations = () => {
         if (!window.confirm("Are you sure you want to delete this donation campaign?")) return;
 
         try {
-            const res = await fetch(`http://localhost:5000/campaigns/${id}`, {
+            const res = await fetch(`https://pet-adoption-server-wheat.vercel.app/campaigns/${id}`, {
                 method: 'DELETE',
             });
             if (res.ok) {
@@ -34,7 +34,7 @@ const AllDonations = () => {
 
     const handlePauseToggle = async (id, isPaused) => {
         try {
-            const res = await fetch(`http://localhost:5000/campaigns/${id}/pause`, {
+            const res = await fetch(`https://pet-adoption-server-wheat.vercel.app/campaigns/${id}/pause`, {
                 method: 'PATCH',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ paused: !isPaused }),

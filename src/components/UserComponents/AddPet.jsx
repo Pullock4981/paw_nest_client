@@ -3,6 +3,7 @@ import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import Select from "react-select";
 import Swal from "sweetalert2";
+import { motion } from "framer-motion";
 import { AuthContext } from "../../Context/AuthContext";
 
 const petCategories = [
@@ -28,35 +29,29 @@ const AddPet = () => {
 
     const handleSubmit = async (values, { resetForm }) => {
         try {
-            // ✅ Upload image to ImgBB
             const imageData = new FormData();
             imageData.append("image", values.image);
 
             const uploadRes = await fetch(
                 `https://api.imgbb.com/1/upload?key=145f5aeaf6a15c67199ff6c3ef4dbd4e`,
-                {
-                    method: "POST",
-                    body: imageData,
-                }
+                { method: "POST", body: imageData }
             );
-
             const uploadResult = await uploadRes.json();
             const imageUrl = uploadResult?.data?.url;
 
             if (!imageUrl) throw new Error("Image upload failed.");
 
-            // ✅ Confirm and Submit
             Swal.fire({
                 title: "Confirm Pet Details",
                 html: `
-                    <img src="${imageUrl}" alt="Pet Image" class="w-32 h-32 mx-auto rounded mb-4"/>
-                    <p><strong>Name:</strong> ${values.name}</p>
-                    <p><strong>Age:</strong> ${values.age}</p>
-                    <p><strong>Category:</strong> ${values.category}</p>
-                    <p><strong>Location:</strong> ${values.location}</p>
-                    <p><strong>Short Description:</strong> ${values.shortDescription}</p>
-                    <p><strong>Long Description:</strong> ${values.longDescription}</p>
-                `,
+          <img src="${imageUrl}" alt="Pet Image" class="w-32 h-32 mx-auto rounded mb-4"/>
+          <p><strong>Name:</strong> ${values.name}</p>
+          <p><strong>Age:</strong> ${values.age}</p>
+          <p><strong>Category:</strong> ${values.category}</p>
+          <p><strong>Location:</strong> ${values.location}</p>
+          <p><strong>Short Description:</strong> ${values.shortDescription}</p>
+          <p><strong>Long Description:</strong> ${values.longDescription}</p>
+        `,
                 showCancelButton: true,
                 confirmButtonText: "Submit",
                 confirmButtonColor: "#865B97",
@@ -73,7 +68,7 @@ const AddPet = () => {
                         userEmail: user?.email || "unknown",
                     };
 
-                    const res = await fetch("http://localhost:5000/pets", {
+                    const res = await fetch("https://pet-adoption-server-wheat.vercel.app/pets", {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
                         body: JSON.stringify(petData),
@@ -92,8 +87,13 @@ const AddPet = () => {
     };
 
     return (
-        <div className="max-w-5xl mx-auto p-6 bg-white shadow rounded">
-            <h2 className="text-2xl font-bold mb-6">Add a New Pet</h2>
+        <motion.div
+            className="max-w-6xl mx-auto p-6 sm:p-8 bg-white shadow-xl rounded-lg"
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+        >
+            <h2 className="text-3xl font-bold mb-6 text-center text-[#865B97]">Add a New Pet</h2>
 
             <Formik
                 initialValues={{
@@ -109,26 +109,41 @@ const AddPet = () => {
                 onSubmit={handleSubmit}
             >
                 {({ setFieldValue, values, errors, touched }) => (
-                    <Form className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <Form className="grid grid-cols-1 md:grid-cols-3 gap-2">
 
-                        {/* Pet Name */}
+                        {/* Image Upload - full width */}
+                        <div className="md:col-span-3">
+                            <label className="block font-semibold">Pet Image</label>
+                            <input
+                                type="file"
+                                name="image"
+                                accept="image/*"
+                                className="mt-2 w-full border p-2 rounded"
+                                onChange={(e) => setFieldValue("image", e.target.files[0])}
+                            />
+                            {errors.image && touched.image && (
+                                <div className="text-red-500 text-sm">{errors.image}</div>
+                            )}
+                        </div>
+
+                        {/* Name */}
                         <div>
-                            <label className="block font-semibold">Pet Name</label>
+                            <label className="block font-semibold">Name</label>
                             <Field
                                 name="name"
-                                className="mt-2 block w-full border p-2 rounded"
-                                placeholder="Enter pet name"
+                                className="mt-1 w-full border p-2 rounded"
+                                placeholder="Pet name"
                             />
                             <ErrorMessage name="name" component="div" className="text-red-500 text-sm" />
                         </div>
 
                         {/* Age */}
                         <div>
-                            <label className="block font-semibold">Pet Age</label>
+                            <label className="block font-semibold">Age</label>
                             <Field
                                 name="age"
-                                className="mt-2 block w-full border p-2 rounded"
-                                placeholder="Enter pet age"
+                                className="mt-1 w-full border p-2 rounded"
+                                placeholder="Pet age"
                             />
                             <ErrorMessage name="age" component="div" className="text-red-500 text-sm" />
                         </div>
@@ -141,76 +156,63 @@ const AddPet = () => {
                                 name="category"
                                 value={petCategories.find((cat) => cat.value === values.category)}
                                 onChange={(option) => setFieldValue("category", option.value)}
-                                className="mt-2"
+                                className="mt-1"
                             />
                             {errors.category && touched.category && (
                                 <div className="text-red-500 text-sm">{errors.category}</div>
                             )}
                         </div>
 
-                        {/* Location */}
-                        <div>
-                            <label className="block font-semibold">Location</label>
-                            <Field
-                                name="location"
-                                className="mt-2 block w-full border p-2 rounded"
-                                placeholder="Enter pickup location"
-                            />
-                            <ErrorMessage name="location" component="div" className="text-red-500 text-sm" />
-                        </div>
-
-                        {/* Short Description */}
-                        <div className="md:col-span-2">
-                            <label className="block font-semibold">Short Description</label>
-                            <Field
-                                name="shortDescription"
-                                className="mt-2 block w-full border p-2 rounded"
-                                placeholder="Short description or owner note"
-                            />
-                            <ErrorMessage name="shortDescription" component="div" className="text-red-500 text-sm" />
+                        {/* Location + Short Description */}
+                        <div className="md:col-span-2 flex flex-col md:flex-row gap-4">
+                            <div className="flex-1">
+                                <label className="block font-semibold">Location</label>
+                                <Field
+                                    name="location"
+                                    className="mt-1 w-full border p-2 rounded"
+                                    placeholder="City or area"
+                                />
+                                <ErrorMessage name="location" component="div" className="text-red-500 text-sm" />
+                            </div>
+                            <div className="flex-1">
+                                <label className="block font-semibold">Short Description</label>
+                                <Field
+                                    name="shortDescription"
+                                    className="mt-1 w-full border p-2 rounded"
+                                    placeholder="Short summary"
+                                />
+                                <ErrorMessage name="shortDescription" component="div" className="text-red-500 text-sm" />
+                            </div>
                         </div>
 
                         {/* Long Description */}
-                        <div className="md:col-span-2">
+                        <div className="md:col-span-3">
                             <label className="block font-semibold">Long Description</label>
                             <Field
                                 as="textarea"
                                 name="longDescription"
-                                rows="5"
-                                className="mt-2 block w-full border p-2 rounded"
-                                placeholder="Detailed info about the pet"
+                                rows="4"
+                                className="mt-1 w-full border p-2 rounded"
+                                placeholder="Details about the pet"
                             />
                             <ErrorMessage name="longDescription" component="div" className="text-red-500 text-sm" />
                         </div>
 
-                        {/* Image Upload */}
-                        <div className="md:col-span-2">
-                            <label className="block font-semibold">Pet Image</label>
-                            <input
-                                type="file"
-                                name="image"
-                                accept="image/*"
-                                className="mt-2 block w-full border p-2 rounded"
-                                onChange={(e) => setFieldValue("image", e.target.files[0])}
-                            />
-                            {errors.image && touched.image && (
-                                <div className="text-red-500 text-sm">{errors.image}</div>
-                            )}
+                        {/* Submit */}
+                        <div className="md:col-span-3 text-right mt-4">
+                            <motion.button
+                                whileHover={{ scale: 1.05 }}
+                                type="submit"
+                                className="bg-[#865B97] hover:bg-purple-700 text-white px-6 py-2 rounded shadow"
+                            >
+                                Submit Pet
+                            </motion.button>
                         </div>
 
-                        {/* Submit */}
-                        <div className="md:col-span-2 text-right">
-                            <button
-                                type="submit"
-                                className="bg-purple-600 hover:bg-purple-700 cursor-pointer text-white px-6 py-2 rounded"
-                            >
-                                Submit
-                            </button>
-                        </div>
                     </Form>
                 )}
             </Formik>
-        </div>
+        </motion.div>
     );
 };
 

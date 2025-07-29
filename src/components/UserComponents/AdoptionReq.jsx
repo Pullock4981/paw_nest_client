@@ -9,9 +9,8 @@ const AdoptionReq = () => {
 
     const fetchRequests = async () => {
         if (!user?.email) return;
-
         try {
-            const res = await fetch(`http://localhost:5000/adoptionRequests?ownerEmail=${user.email}`);
+            const res = await fetch(`https://pet-adoption-server-wheat.vercel.app/adoptionRequests?ownerEmail=${user.email}`);
             const data = await res.json();
             setRequests(data);
         } catch (error) {
@@ -38,21 +37,23 @@ const AdoptionReq = () => {
 
                 if (!confirm.isConfirmed) return;
 
-                const res = await fetch(`http://localhost:5000/adoptionRequests/${requestId}/accept`, {
-                    method: "DELETE",
-                });
+                const res = await fetch(
+                    `https://pet-adoption-server-wheat.vercel.app/adoptionRequests/${requestId}/accept`,
+                    { method: "DELETE" }
+                );
 
                 if (!res.ok) throw new Error("Failed to accept request and remove pet");
 
                 Swal.fire("Adopted!", "The pet has been adopted and removed.", "success");
             } else {
-                const res = await fetch(`http://localhost:5000/adoptionRequests/${requestId}`, {
-                    method: "PATCH",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({ status: "rejected" }),
-                });
+                const res = await fetch(
+                    `https://pet-adoption-server-wheat.vercel.app/adoptionRequests/${requestId}`,
+                    {
+                        method: "PATCH",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ status: "rejected" }),
+                    }
+                );
 
                 if (!res.ok) throw new Error("Failed to reject request");
                 Swal.fire("Rejected", "The request has been rejected.", "info");
@@ -67,50 +68,52 @@ const AdoptionReq = () => {
 
     if (loading) return <p className="p-4">Loading adoption requests...</p>;
 
-    if (!requests.length)
-        return <p className="p-4 text-gray-600">No adoption requests found.</p>;
+    if (!requests.length) return <p className="p-4 text-gray-600">No adoption requests found.</p>;
 
     return (
-        <div className="p-4">
+        <div className="p-4 max-w-full">
             <h2 className="text-2xl font-semibold mb-4">Adoption Requests</h2>
 
             <div className="overflow-x-auto">
-                <table className="w-full table-auto border border-gray-300">
+                <table className="min-w-[900px] w-full bg-white border border-gray-300 shadow-md rounded-md text-sm">
                     <thead className="bg-gray-100">
                         <tr>
-                            <th className="p-2 border">Pet</th>
-                            <th className="p-2 border">Requester Name</th>
-                            <th className="p-2 border">Email</th>
-                            <th className="p-2 border">Phone</th>
-                            <th className="p-2 border">Location</th>
-                            <th className="p-2 border">Status</th>
-                            <th className="p-2 border">Actions</th>
+                            <th className="p-3 border text-left">Pet</th>
+                            <th className="p-3 border text-left">Requester Name</th>
+                            <th className="p-3 border text-left">Email</th>
+                            <th className="p-3 border text-left">Phone</th>
+                            <th className="p-3 border text-left">Location</th>
+                            <th className="p-3 border text-left">Status</th>
+                            <th className="p-3 border text-left">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
                         {requests.map((req) => (
-                            <tr key={req._id}>
-                                <td className="p-2 border flex items-center gap-2">
+                            <tr
+                                key={req._id}
+                                className="hover:bg-purple-50 transition duration-300 ease-in-out"
+                            >
+                                <td className="p-3 border flex flex-col items-center gap-2">
                                     <img
                                         src={req.petImage}
                                         alt={req.petName}
-                                        className="w-12 h-12 object-cover rounded"
+                                        className="w-10 h-10 object-cover rounded"
                                     />
                                     <span>{req.petName}</span>
                                 </td>
-                                <td className="p-2 border">{req.userName}</td>
-                                <td className="p-2 border">{req.email}</td>
-                                <td className="p-2 border">{req.phone}</td>
-                                <td className="p-2 border">{req.address}</td>
-                                <td className="p-2 border capitalize">{req.status}</td>
-                                <td className="p-2 border">
+                                <td className="p-3 border">{req.userName}</td>
+                                <td className="p-3 border">{req.email}</td>
+                                <td className="p-3 border">{req.phone}</td>
+                                <td className="p-3 border">{req.address}</td>
+                                <td className="p-3 border capitalize">{req.status}</td>
+                                <td className="p-3 border">
                                     {req.status === "pending" ? (
-                                        <div className="flex gap-2">
+                                        <div className="flex flex-wrap gap-2">
                                             <button
                                                 onClick={() =>
                                                     handleStatusChange(req._id, "accepted", req.petId)
                                                 }
-                                                className="bg-green-500 text-white px-2 py-1 rounded"
+                                                className="bg-green-500 hover:bg-green-600 transition px-3 py-1 text-white rounded"
                                             >
                                                 Accept
                                             </button>
@@ -118,7 +121,7 @@ const AdoptionReq = () => {
                                                 onClick={() =>
                                                     handleStatusChange(req._id, "rejected", req.petId)
                                                 }
-                                                className="bg-red-500 text-white px-2 py-1 rounded"
+                                                className="bg-red-500 hover:bg-red-600 transition px-3 py-1 text-white rounded"
                                             >
                                                 Reject
                                             </button>

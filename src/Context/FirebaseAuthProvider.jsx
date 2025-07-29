@@ -45,7 +45,7 @@ const FirebaseAuthProvider = ({ children }) => {
             const email = firebaseUser.email;
 
             // Check if user exists
-            const res = await fetch(`http://localhost:5000/users/${email}`);
+            const res = await fetch(`https://pet-adoption-server-wheat.vercel.app/users/${email}`);
             if (res.status === 200) {
                 return; // User exists, don't overwrite role
             }
@@ -58,7 +58,7 @@ const FirebaseAuthProvider = ({ children }) => {
                 role: "user",
             };
 
-            await fetch("http://localhost:5000/users", {
+            await fetch("https://pet-adoption-server-wheat.vercel.app/users", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -72,7 +72,7 @@ const FirebaseAuthProvider = ({ children }) => {
 
     const fetchUserRole = async (email) => {
         try {
-            const res = await fetch(`http://localhost:5000/users/${email}`);
+            const res = await fetch(`https://pet-adoption-server-wheat.vercel.app/users/${email}`);
             const data = await res.json();
             setRole(data.role || 'user');
         } catch (error) {
