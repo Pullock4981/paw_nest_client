@@ -51,9 +51,9 @@ const MyDonation = () => {
 
     return (
         <div className="max-w-5xl mx-auto mt-10 p-4">
-            <h2 className="text-2xl text-[#865B97] font-bold mb-6 text-center">My Donations</h2>
+            <h2 className="text-2xl text-[var(--heading-color)] font-bold mb-6 text-center">My Donations</h2>
             {donations.length === 0 ? (
-                <div className="text-center text-gray-600">You haven't made any donations yet.</div>
+                <div className="text-center">You haven't made any donations yet.</div>
             ) : (
                 <table className="w-full border rounded shadow">
                     <thead className="bg-gray-200">

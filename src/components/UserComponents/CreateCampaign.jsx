@@ -84,8 +84,8 @@ const CreateCampaign = () => {
     };
 
     return (
-        <div className="max-w-4xl mx-auto p-6 bg-white shadow rounded mt-6">
-            <h2 className="text-2xl font-bold mb-6 text-[#865B97] text-center">Create Donation Campaign</h2>
+        <div className="max-w-4xl mx-auto p-6 shadow rounded mt-6">
+            <h2 className="text-2xl font-bold mb-6 text-[var(--heading-color)] text-center">Create Donation Campaign</h2>
 
             <form onSubmit={handleSubmit} className="space-y-3">
 

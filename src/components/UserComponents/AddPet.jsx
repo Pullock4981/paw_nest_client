@@ -88,12 +88,12 @@ const AddPet = () => {
 
     return (
         <motion.div
-            className="max-w-6xl mx-auto p-6 sm:p-8 bg-white shadow-xl rounded-lg"
+            className="max-w-6xl mx-auto p-6 sm:p-8 shadow-xl rounded-lg"
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
         >
-            <h2 className="text-2xl font-bold mb-6 text-center text-[#865B97]">Add a New Pet</h2>
+            <h2 className="text-2xl font-bold mb-6 text-center text-[var(--heading-color)]">Add a New Pet</h2>
 
             <Formik
                 initialValues={{

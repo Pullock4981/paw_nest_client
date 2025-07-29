@@ -61,7 +61,7 @@ const PetListing = () => {
 
     return (
         <div className="max-w-7xl mx-auto px-4 py-10 sm:py-12">
-            <h1 className="text-3xl text-[#865B97] font-bold text-center mb-8">🐾 Available Pets for Adoption</h1>
+            <h1 className="text-3xl text-[var(--heading-color)] font-bold text-center mb-8">🐾 Available Pets for Adoption</h1>
 
             <div className="flex flex-wrap gap-4 justify-center mb-6">
                 <input
@@ -90,7 +90,7 @@ const PetListing = () => {
                         initial={{ opacity: 0, y: 30 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: index * 0.05 }}
-                        className="bg-white rounded-xl shadow-md overflow-hidden flex flex-col hover:shadow-lg transition-shadow duration-300"
+                        className="rounded-xl shadow-md shadow-amber-200 overflow-hidden flex flex-col hover:shadow-lg transition-shadow duration-300"
                     >
                         <img
                             src={pet.image || "https://via.placeholder.com/400x300?text=No+Image"}
@@ -100,8 +100,8 @@ const PetListing = () => {
                         <div className="p-4 flex flex-col justify-between flex-grow">
                             <div>
                                 <h2 className="text-xl font-semibold mb-1">{pet.name}</h2>
-                                <p className="text-gray-700"><strong>Age:</strong> {pet.age || "Unknown"}</p>
-                                <p className="text-gray-700"><strong>Location:</strong> {pet.location || "Unknown"}</p>
+                                <p><strong>Age:</strong> {pet.age || "Unknown"}</p>
+                                <p><strong>Location:</strong> {pet.location || "Unknown"}</p>
                             </div>
                             <button
                                 onClick={() => navigate(`/petDetails/${pet._id}`)}

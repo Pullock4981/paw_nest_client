@@ -164,53 +164,57 @@ const MyAddedPet = () => {
 
     return (
         <div className="p-4">
-            <h2 className="text-2xl text-[#865B97] text-center font-bold mb-6">My Added Pets</h2>
-            <div className="w-full overflow-x-auto">
-                <div className="min-w-full inline-block align-middle">
-                    <div className="overflow-x-auto rounded-md border shadow-md">
-                        <table className="min-w-full divide-y divide-gray-200 bg-white">
-                            <thead className="bg-gray-100">
-                                {table.getHeaderGroups().map((headerGroup) => (
-                                    <tr key={headerGroup.id}>
-                                        {headerGroup.headers.map((header) => (
-                                            <th
-                                                key={header.id}
-                                                scope="col"
-                                                className="px-4 py-3 text-left text-sm font-semibold text-gray-700 whitespace-nowrap cursor-pointer"
-                                                onClick={header.column.getToggleSortingHandler()}
-                                            >
-                                                {flexRender(header.column.columnDef.header, header.getContext())}
-                                                {header.column.getIsSorted() === "asc"
-                                                    ? " ↑"
-                                                    : header.column.getIsSorted() === "desc"
-                                                        ? " ↓"
-                                                        : ""}
-                                            </th>
-                                        ))}
-                                    </tr>
-                                ))}
-                            </thead>
-                            <tbody className="divide-y divide-gray-200">
-                                {currentPageRows.map((row) => (
-                                    <tr
-                                        key={row.id}
-                                        className="hover:bg-purple-50 transition duration-300"
-                                    >
-                                        {row.getVisibleCells().map((cell) => (
-                                            <td
-                                                key={cell.id}
-                                                className="px-4 py-3 text-sm text-gray-700 whitespace-nowrap"
-                                            >
-                                                {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                                            </td>
-                                        ))}
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
+            <h2 className="text-2xl text-[var(--heading-color)] text-center font-bold mb-6">My Added Pets</h2>
+            {pets.length === 0 ? (
+                <div className="text-center">You haven't added any pets yet.</div>
+            ) : (
+                <div className="w-full overflow-x-auto">
+                    <div className="min-w-full inline-block align-middle">
+                        <div className="overflow-x-auto rounded-md border shadow-md">
+                            <table className="min-w-full divide-y divide-gray-200 bg-white">
+                                <thead className="bg-gray-100">
+                                    {table.getHeaderGroups().map((headerGroup) => (
+                                        <tr key={headerGroup.id}>
+                                            {headerGroup.headers.map((header) => (
+                                                <th
+                                                    key={header.id}
+                                                    scope="col"
+                                                    className="px-4 py-3 text-left text-sm font-semibold text-gray-700 whitespace-nowrap cursor-pointer"
+                                                    onClick={header.column.getToggleSortingHandler()}
+                                                >
+                                                    {flexRender(header.column.columnDef.header, header.getContext())}
+                                                    {header.column.getIsSorted() === "asc"
+                                                        ? " ↑"
+                                                        : header.column.getIsSorted() === "desc"
+                                                            ? " ↓"
+                                                            : ""}
+                                                </th>
+                                            ))}
+                                        </tr>
+                                    ))}
+                                </thead>
+                                <tbody className="divide-y divide-gray-200">
+                                    {currentPageRows.map((row) => (
+                                        <tr
+                                            key={row.id}
+                                            className="hover:bg-purple-50 transition duration-300"
+                                        >
+                                            {row.getVisibleCells().map((cell) => (
+                                                <td
+                                                    key={cell.id}
+                                                    className="px-4 py-3 text-sm text-gray-700 whitespace-nowrap"
+                                                >
+                                                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                                                </td>
+                                            ))}
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
-            </div>
+            )}
 
 
 

@@ -109,7 +109,7 @@ const PetDetails = () => {
                 className="w-full h-72 sm:h-96 object-cover rounded-lg shadow-md mb-6"
             />
 
-            <div className="space-y-2 text-gray-700">
+            <div className="space-y-2 ">
                 <p><strong>Age:</strong> {pet.age}</p>
                 <p><strong>Category:</strong> {pet.category}</p>
                 <p><strong>Location:</strong> {pet.location}</p>
@@ -129,7 +129,7 @@ const PetDetails = () => {
             <Modal
                 isOpen={isModalOpen}
                 onRequestClose={() => setIsModalOpen(false)}
-                className="bg-white max-w-lg w-[90%] mx-auto mt-24 p-6 rounded-lg shadow-xl outline-none"
+                className="max-w-lg w-[90%] border mx-auto mt-12 p-6 rounded-lg shadow-xl shadow-amber-200 outline-none"
                 overlayClassName="fixed inset-0 bg-black bg-opacity-40 z-50 flex justify-center items-start overflow-y-auto"
                 ariaHideApp={false}
             >
@@ -137,11 +137,11 @@ const PetDetails = () => {
                 <form onSubmit={handleSubmit} className="space-y-4">
                     <div>
                         <label className="block mb-1 text-sm">Your Name</label>
-                        <input value={user?.displayName} disabled className="w-full border p-2 rounded bg-gray-100" />
+                        <input value={user?.displayName} disabled className="w-full border p-2 rounded" />
                     </div>
                     <div>
                         <label className="block mb-1 text-sm">Email</label>
-                        <input value={user?.email} disabled className="w-full border p-2 rounded bg-gray-100" />
+                        <input value={user?.email} disabled className="w-full border p-2 rounded" />
                     </div>
                     <div>
                         <label className="block mb-1 text-sm">Phone</label>
@@ -166,7 +166,7 @@ const PetDetails = () => {
                         <button
                             type="submit"
                             disabled={loading}
-                            className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 py-2 rounded transition"
+                            className="bg-[#865B97] hover:bg-[#EFCD5C] text-white hover:text-black font-semibold px-4 py-2 rounded transition"
                         >
                             {loading ? "Submitting..." : "Submit Request"}
                         </button>

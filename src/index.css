@@ -1,3 +1,35 @@
 @import "tailwindcss";
 @plugin "daisyui";
 
+/* ✅ Custom DaisyUI theme override */
+@layer components {
+    :root[data-theme='light'] {
+        --p: #865B97;
+        /* Primary button color */
+        --pc: #ffffff;
+        /* Text on primary */
+        --s: #EFCD5C;
+        /* Secondary button color */
+        --sc: #000000;
+        /* Text on secondary */
+        --heading-color: #865B97;
+    }
+
+    :root[data-theme='dark'] {
+        --p: #865B97;
+        --pc: #ffffff;
+        --s: #EFCD5C;
+        --sc: #000000;
+        --heading-color: #EFCD5C;
+    }
+
+    /* Global heading color override */
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+        color: var(--heading-color);
+    }
+}

@@ -6,7 +6,7 @@ const Banner = () => {
     return (
         <div>
             {/* Banner Section */}
-            <section className="bg-white">
+            <section className="">
                 <div className="max-w-7xl mx-auto flex flex-col-reverse lg:flex-row items-center px-4 md:px-16 py-12 gap-10">
                     {/* Left Content */}
                     <motion.div
@@ -15,18 +15,12 @@ const Banner = () => {
                         transition={{ duration: 0.6 }}
                         className="text-center lg:text-left lg:w-1/2"
                     >
-                        <h1 className="text-3xl md:text-5xl font-bold text-[#865B97] mb-6">
+                        <h1 className="text-3xl md:text-5xl font-bold text-[var(--heading-color)] mb-6">
                             Find Your Forever Friend 🐾
                         </h1>
-                        <p className="text-gray-700 mb-6 text-lg">
+                        <p className="mb-6 text-lg">
                             Join us in giving pets a second chance at life. Adopt, donate, and make a difference today!
                         </p>
-                        {/* <a
-                            href="/adopt"
-                            className="inline-block bg-[#865B97] text-white px-6 py-3 rounded shadow hover:bg-[#EFCD5C] hover:text-black transition"
-                        >
-                            Explore Pets
-                        </a> */}
                         <Link to='/petList'>
                             <button className="inline-block bg-[#865B97] text-white px-6 py-3 rounded shadow hover:bg-[#EFCD5C] hover:text-black transition">
                                 Explore Pets

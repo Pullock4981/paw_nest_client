@@ -75,7 +75,7 @@ const DonationDetails = () => {
     if (!campaign) return <div>Loading...</div>;
 
     return (
-        <div className="max-w-xl mx-auto mt-10 mb-10 p-6 bg-white shadow rounded">
+        <div className="max-w-xl mx-auto mt-10 mb-10 p-6  shadow-lg shadow-amber-200 rounded">
             <h2 className="text-2xl font-bold mb-2">{campaign.petName}</h2>
             <img src={campaign.image} alt={campaign.petName} className="w-full h-60 object-cover rounded mb-4" />
             <p><strong>Short Description:</strong> {campaign.shortDescription}</p>

@@ -13,9 +13,9 @@ const petCategories = [
 
 const PetCategories = () => {
     return (
-        <section className="bg-white py-12 px-4">
+        <section className=" py-12 px-4">
             <div className="max-w-6xl mx-auto text-center">
-                <h2 className="text-3xl font-bold text-[#865B97] mb-8">
+                <h2 className="text-3xl font-bold text-[var(--heading-color)] mb-8">
                     Explore Pet Categories
                 </h2>
                 <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-6 justify-center">
@@ -23,10 +23,10 @@ const PetCategories = () => {
                         <Link
                             to="/petList"
                             key={index}
-                            className="flex flex-col items-center bg-[#f9f9f9] p-5 rounded-lg shadow hover:bg-[#EFCD5C] transition duration-300"
+                            className="flex flex-col items-center p-5 rounded-lg shadow-lg shadow-amber-200 hover:bg-[#EFCD5C] transition duration-300"
                         >
                             <div className="text-3xl text-[#865B97] mb-2">{category.icon}</div>
-                            <span className="font-semibold text-gray-700">{category.name}</span>
+                            <span className="font-semibold">{category.name}</span>
                         </Link>
                     ))}
                 </div>

@@ -61,7 +61,7 @@ const AllDonations = () => {
         <div className="p-6 overflow-x-auto">
             <h2 className="text-2xl font-semibold mb-4">All Donation Campaigns</h2>
             <table className="min-w-full border rounded">
-                <thead className="bg-gray-200">
+                <thead className="bg-gray-200 text-gray-700">
                     <tr>
                         <th className="p-3 text-left">#</th>
                         <th className="p-3 text-left">Image</th>
@@ -89,7 +89,7 @@ const AllDonations = () => {
                                     {donation.paused ? 'Paused' : 'Active'}
                                 </span>
                             </td>
-                            <td className="p-3 flex gap-2 flex-wrap">
+                            <td className="p-3 flex gap-2 flex-wrap items-center justify-center">
                                 <button
                                     onClick={() => handlePauseToggle(donation._id, donation.paused)}
                                     className="bg-yellow-500 hover:bg-yellow-600 text-white text-sm px-3 py-1 rounded"

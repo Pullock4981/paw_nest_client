@@ -49,9 +49,9 @@ const Testimonials = () => {
     };
 
     return (
-        <section className="bg-gray-50 py-16 px-4">
+        <section className=" py-16 px-4">
             <div className="max-w-6xl mx-auto text-center">
-                <h2 className="md:text-4xl text-3xl font-bold text-[#865B97] mb-10">Happy Tails</h2>
+                <h2 className="md:text-4xl text-3xl font-bold text-[var(--heading-color)] mb-10">Happy Tails</h2>
 
                 <Slider {...settings}>
                     {stories.map((story, index) => (
@@ -59,14 +59,14 @@ const Testimonials = () => {
                             key={index}
                             className="p-4"
                         >
-                            <div className="bg-white p-6 rounded-lg shadow-md transition hover:shadow-xl h-full flex flex-col items-center">
+                            <div className="p-6 rounded-lg shadow-md shadow-amber-200 border transition hover:shadow-lg h-full flex flex-col items-center">
                                 <img
                                     src={story.image}
                                     alt={story.name}
                                     className="w-24 h-24 rounded-full object-cover mb-4"
                                 />
-                                <h3 className="text-xl font-semibold text-[#865B97]">{story.name}</h3>
-                                <p className="text-gray-600 mt-2">{story.feedback}</p>
+                                <h3 className="text-xl font-semibold text-[var(--heading-color)]">{story.name}</h3>
+                                <p className="mt-2">{story.feedback}</p>
                             </div>
                         </div>
                     ))}

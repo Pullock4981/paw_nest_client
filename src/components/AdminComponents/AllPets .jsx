@@ -63,7 +63,7 @@ const AllPets = () => {
         <div className="p-6 overflow-x-auto">
             <h2 className="text-2xl font-semibold mb-4">All Pets</h2>
             <table className="min-w-full border rounded">
-                <thead className="bg-gray-200">
+                <thead className="bg-gray-200 text-gray-700">
                     <tr>
                         <th className="p-3 text-left">#</th>
                         <th className="p-3 text-left">Image</th>

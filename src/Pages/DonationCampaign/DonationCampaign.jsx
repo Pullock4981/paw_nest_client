@@ -55,7 +55,7 @@ const DonationCampaign = () => {
                 initial={{ opacity: 0, y: -20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5 }}
-                className="text-3xl font-bold text-center text-[#865B97] mb-10"
+                className="text-3xl font-bold text-center text-[var(--heading-color)] mb-10"
             >
                 Donation Campaigns
             </motion.h2>
@@ -74,7 +74,7 @@ const DonationCampaign = () => {
                             initial={{ opacity: 0, y: 30 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ duration: 0.4, delay: index * 0.05 }}
-                            className="bg-white border rounded-xl shadow-lg hover:shadow-2xl transition-all p-5 flex flex-col"
+                            className="border rounded-xl shadow-lg shadow-amber-200 hover:shadow-2xl transition-all p-5 flex flex-col"
                         >
                             <img
                                 src={campaign.image || "https://via.placeholder.com/300"}
@@ -82,10 +82,10 @@ const DonationCampaign = () => {
                                 className="w-full h-40 object-cover rounded-lg mb-4"
                             />
                             <h3 className="text-xl font-semibold mb-1">{campaign.petName}</h3>
-                            <p className="text-sm text-gray-600">
+                            <p className="text-sm ">
                                 <strong>Max Donation:</strong> ${campaign.maxDonation}
                             </p>
-                            <p className="text-sm text-gray-600 mb-2">
+                            <p className="text-sm mb-2">
                                 <strong>Donated:</strong> ${donated}
                             </p>
 

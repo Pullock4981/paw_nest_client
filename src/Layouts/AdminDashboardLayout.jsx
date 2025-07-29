@@ -18,7 +18,7 @@ const AdminDashboardLayout = () => {
                     <nav className="flex flex-col gap-7 w-full mt-8">
                         <NavLink
                             to="/adminDashboard"
-                            className="flex items-center gap-3 text-lg p-2 font-semibold hover:text-[#865B97]"
+                            className="flex items-center gap-3 text-lg p-2 font-semibold text-[var(--heading-color)]"
                             end
                         >
                             <FaHome />
@@ -27,7 +27,7 @@ const AdminDashboardLayout = () => {
 
                         <NavLink
                             to="/adminDashboard/allUsers"
-                            className="flex items-center gap-3 text-lg p-2 font-semibold hover:text-[#865B97]"
+                            className="flex items-center gap-3 text-lg p-2 font-semibold text-[var(--heading-color)]"
                         >
                             <FaUserShield />
                             <span className="hidden lg:inline">Manage Users</span>
@@ -35,7 +35,7 @@ const AdminDashboardLayout = () => {
 
                         <NavLink
                             to="/adminDashboard/allPets"
-                            className="flex items-center gap-3 text-lg p-2 font-semibold hover:text-[#865B97]"
+                            className="flex items-center gap-3 text-lg p-2 font-semibold text-[var(--heading-color)]"
                         >
                             <FaPaw />
                             <span className="hidden lg:inline">Manage Pets</span>
@@ -43,7 +43,7 @@ const AdminDashboardLayout = () => {
 
                         <NavLink
                             to="/adminDashboard/allDonations"
-                            className="flex items-center gap-3 text-lg p-2 font-semibold hover:text-[#865B97]"
+                            className="flex items-center gap-3 text-lg p-2 font-semibold text-[var(--heading-color)]"
                         >
                             <FaHandHoldingHeart />
                             <span className="hidden lg:inline">Manage Donations</span>

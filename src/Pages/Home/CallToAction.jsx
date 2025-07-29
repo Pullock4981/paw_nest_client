@@ -3,7 +3,7 @@ import { Link } from 'react-router';
 
 const CallToAction = () => {
     return (
-        <section className="bg-white py-16 px-4">
+        <section className=" py-16 px-4">
             <div className="max-w-6xl mx-auto flex flex-col lg:flex-row items-center gap-10">
                 {/* Image */}
                 <div className="w-full lg:w-1/2">
@@ -16,10 +16,10 @@ const CallToAction = () => {
 
                 {/* Text Content */}
                 <div className="w-full lg:w-1/2 text-center lg:text-left">
-                    <h2 className="md:text-4xl text-3xl font-bold text-[#865B97] mb-4">
+                    <h2 className="md:text-4xl text-3xl font-bold text-[var(--heading-color)] mb-4">
                         Give Them a Second Chance
                     </h2>
-                    <p className="text-gray-700 mb-6 text-lg">
+                    <p className="mb-6 text-lg">
                         Every pet deserves a loving home. By adopting, you’re giving them a second chance at life and gaining a loyal companion.
                         Join us in changing lives — one paw at a time.
                     </p>
