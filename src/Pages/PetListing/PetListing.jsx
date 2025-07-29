@@ -61,7 +61,7 @@ const PetListing = () => {
 
     return (
         <div className="max-w-7xl mx-auto px-4 py-10 sm:py-12">
-            <h1 className="text-3xl font-bold text-center mb-8">🐾 Available Pets for Adoption</h1>
+            <h1 className="text-3xl text-[#865B97] font-bold text-center mb-8">🐾 Available Pets for Adoption</h1>
 
             <div className="flex flex-wrap gap-4 justify-center mb-6">
                 <input
@@ -105,7 +105,7 @@ const PetListing = () => {
                             </div>
                             <button
                                 onClick={() => navigate(`/petDetails/${pet._id}`)}
-                                className="mt-4 bg-purple-600 text-white w-full py-2 rounded hover:bg-purple-700 transition duration-200"
+                                className="bg-[#865B97] text-white px-4 py-2 hover:bg-[#EFCD5C] hover:text-black rounded-lg transition"
                             >
                                 View Details
                             </button>

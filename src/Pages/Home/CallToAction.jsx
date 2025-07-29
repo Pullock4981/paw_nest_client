@@ -16,7 +16,7 @@ const CallToAction = () => {
 
                 {/* Text Content */}
                 <div className="w-full lg:w-1/2 text-center lg:text-left">
-                    <h2 className="text-4xl font-bold text-[#865B97] mb-4">
+                    <h2 className="md:text-4xl text-3xl font-bold text-[#865B97] mb-4">
                         Give Them a Second Chance
                     </h2>
                     <p className="text-gray-700 mb-6 text-lg">

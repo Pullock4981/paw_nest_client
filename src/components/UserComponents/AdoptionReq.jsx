@@ -68,7 +68,16 @@ const AdoptionReq = () => {
 
     if (loading) return <p className="p-4">Loading adoption requests...</p>;
 
-    if (!requests.length) return <p className="p-4 text-gray-600">No adoption requests found.</p>;
+    if (!requests.length)
+        return (
+            <div className="w-full flex justify-center mt-10">
+                <div className="text-center bg-yellow-100 border border-yellow-300 text-yellow-800 px-6 py-4 rounded-md shadow-md">
+                    <h2 className="text-xl font-semibold">No adoption requests found</h2>
+                    <p className="text-sm mt-1">You currently have no pending adoption requests.</p>
+                </div>
+            </div>
+        );
+
 
     return (
         <div className="p-4 max-w-full">

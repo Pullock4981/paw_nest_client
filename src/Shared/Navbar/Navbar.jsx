@@ -35,7 +35,7 @@ const Navbar = () => {
     );
 
     return (
-        <div className="navbar bg-base-100 shadow-sm lg:px-16 px-4">
+        <div className="navbar bg-base-100 shadow-lg lg:px-16 px-4 sticky top-0 z-50">
             {/* Left Section */}
             <div className="navbar-start">
                 <div className="dropdown">

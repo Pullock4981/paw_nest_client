@@ -34,7 +34,7 @@ const FirebaseAuthProvider = ({ children }) => {
 
     const SignOutUser = () => {
         setLoading(true);
-        setUser(null);
+        // setUser(null);
         setRole(null);
         return signOut(auth);
     };

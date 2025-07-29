@@ -51,7 +51,7 @@ const Testimonials = () => {
     return (
         <section className="bg-gray-50 py-16 px-4">
             <div className="max-w-6xl mx-auto text-center">
-                <h2 className="text-4xl font-bold text-[#865B97] mb-10">Happy Tails</h2>
+                <h2 className="md:text-4xl text-3xl font-bold text-[#865B97] mb-10">Happy Tails</h2>
 
                 <Slider {...settings}>
                     {stories.map((story, index) => (

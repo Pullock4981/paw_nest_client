@@ -23,7 +23,7 @@ const HowItWorks = () => {
     return (
         <section className="bg-white py-16 px-4">
             <div className="max-w-6xl mx-auto text-center">
-                <h2 className="text-4xl font-bold text-[#865B97] mb-12">How It Works</h2>
+                <h2 className="md:text-4xl text-3xl font-bold text-[#865B97] mb-12">How It Works</h2>
                 <div className="grid gap-8 md:grid-cols-3">
                     {steps.map((step, index) => (
                         <div key={index} className="p-6 rounded-lg border shadow hover:shadow-lg transition">

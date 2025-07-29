@@ -1,14 +1,13 @@
-// import React from 'react';
-
-import { use } from "react";
+import { useContext } from "react";
 import { Link, useLocation, useNavigate } from "react-router";
 import { AuthContext } from "../../Context/AuthContext";
+
 
 const LogIn = () => {
     const navigate = useNavigate();
     const location = useLocation();
 
-    const { logInUser, googleSignIn } = use(AuthContext);
+    const { logInUser, googleSignIn } = useContext(AuthContext);
 
     const handleLogin = (e) => {
         e.preventDefault();
@@ -75,7 +74,10 @@ const LogIn = () => {
                             <a href="#" className="text-sm text-red-500 hover:underline">Forgot password?</a>
                         </div>
 
-                        <button type="submit" className="btn btn-block bg-white text-[#865B97] font-bold border border-[#8A4771] hover:bg-[#865B97] hover:text-white transition duration-200">
+                        <button
+                            type="submit"
+                            // disabled={loading}
+                            className="btn btn-block bg-white text-[#865B97] font-bold border border-[#8A4771] hover:bg-[#865B97] hover:text-white transition duration-200">
                             Log In
                         </button>
 

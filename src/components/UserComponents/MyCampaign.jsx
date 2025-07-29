@@ -51,7 +51,7 @@ const MyCampaign = () => {
 
     return (
         <div className="max-w-6xl mx-auto mt-10 p-4">
-            <h2 className="text-3xl font-bold mb-6 text-center">My Donation Campaigns</h2>
+            <h2 className="text-2xl text-[#865B97] font-bold mb-6 text-center">My Donation Campaigns</h2>
 
             {campaigns.length === 0 ? (
                 <div className="text-center text-gray-600">

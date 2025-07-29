@@ -24,6 +24,7 @@ import AllUsers from '../components/AdminComponents/AllUsers';
 import AllPets from '../components/AdminComponents/AllPets ';
 import AllDonations from '../components/AdminComponents/AllDonations';
 import ViewDonators from '../components/UserComponents/ViewDonators';
+import PrivateRoute from '../Shared/PrivateRoute/PrivateRoute';
 
 const router = createBrowserRouter([
     {
@@ -48,7 +49,7 @@ const router = createBrowserRouter([
             },
             {
                 path: "/petDetails/:id",
-                Component: PetDetails
+                element: <PrivateRoute><PetDetails /></PrivateRoute>
             },
             {
                 path: "/donationCampain",
@@ -56,7 +57,7 @@ const router = createBrowserRouter([
             },
             {
                 path: "/donationDetails/:id",
-                Component: DonationDetails
+                element: <PrivateRoute><DonationDetails></DonationDetails></PrivateRoute>
                 
             },
         ]

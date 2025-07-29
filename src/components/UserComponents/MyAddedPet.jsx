@@ -164,7 +164,7 @@ const MyAddedPet = () => {
 
     return (
         <div className="p-4">
-            <h2 className="text-2xl font-bold mb-6">My Added Pets</h2>
+            <h2 className="text-2xl text-[#865B97] text-center font-bold mb-6">My Added Pets</h2>
             <div className="w-full overflow-x-auto">
                 <div className="min-w-full inline-block align-middle">
                     <div className="overflow-x-auto rounded-md border shadow-md">

@@ -55,7 +55,7 @@ const DonationCampaign = () => {
                 initial={{ opacity: 0, y: -20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5 }}
-                className="text-3xl font-bold text-center text-purple-700 mb-10"
+                className="text-3xl font-bold text-center text-[#865B97] mb-10"
             >
                 Donation Campaigns
             </motion.h2>
@@ -101,7 +101,7 @@ const DonationCampaign = () => {
 
                             <button
                                 onClick={() => navigate(`/donationDetails/${campaign._id}`)}
-                                className="mt-auto bg-purple-600 hover:bg-purple-700 text-white font-medium py-2 rounded-lg transition"
+                                className="bg-[#865B97] text-white px-4 py-2 hover:bg-[#EFCD5C] hover:text-black rounded-lg transition"
                             >
                                 View Details
                             </button>

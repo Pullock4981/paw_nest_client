@@ -93,7 +93,7 @@ const AddPet = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
         >
-            <h2 className="text-3xl font-bold mb-6 text-center text-[#865B97]">Add a New Pet</h2>
+            <h2 className="text-2xl font-bold mb-6 text-center text-[#865B97]">Add a New Pet</h2>
 
             <Formik
                 initialValues={{
