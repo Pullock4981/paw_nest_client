@@ -25,11 +25,13 @@ import AllPets from '../components/AdminComponents/AllPets ';
 import AllDonations from '../components/AdminComponents/AllDonations';
 import ViewDonators from '../components/UserComponents/ViewDonators';
 import PrivateRoute from '../Shared/PrivateRoute/PrivateRoute';
+import ErrorPage from '../Pages/ErrorPage/ErrorPage';
 
 const router = createBrowserRouter([
     {
         path: "/",
         Component: RootLayout,
+        errorElement: <ErrorPage></ErrorPage>,
         children: [
             {
                 index: true,
@@ -65,6 +67,7 @@ const router = createBrowserRouter([
     {
         path: "/userDashboard",
         Component: UserDashBoardLayout,
+        errorElement: <ErrorPage></ErrorPage>,
         children: [
             { index: true, Component: UserDashboardHome },
             { path: "addPet", Component: AddPet },
@@ -81,6 +84,7 @@ const router = createBrowserRouter([
     {
         path: "/adminDashboard",
         Component: AdminDashboardLayout,
+        errorElement: <ErrorPage></ErrorPage>,
         children: [
             { index: true, Component: AdminDashboardHome },
             { path: "allUsers", Component: AllUsers },

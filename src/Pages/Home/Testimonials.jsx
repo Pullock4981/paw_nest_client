@@ -6,27 +6,27 @@ const Testimonials = () => {
         {
             name: "Emily & Max",
             feedback: "Adopting Max changed my life. He’s my best friend now!",
-            image: "https://i.ibb.co/0FB0Kms/dog1.jpg"
+            image: "https://i.ibb.co/rGRhfLcS/r2.jpg"
         },
         {
             name: "Liam & Bella",
             feedback: "I found Bella through this platform, and I am very happy.",
-            image: "https://i.ibb.co/tpftt1Y/cat1.jpg"
+            image: "https://i.ibb.co/RkLMPh7M/c2.jpg"
         },
         {
             name: "Ava & Coco",
             feedback: "Thanks to this site, Coco has a new home and I have a lifelong friend.",
-            image: "https://i.ibb.co/3pHXHQ0/dog2.jpg"
+            image: "https://i.ibb.co/MDkmv8zt/r1.jpg"
         },
         {
             name: "Noah & Snow",
             feedback: "Snow came into our lives as a rescue and now she’s family.",
-            image: "https://i.ibb.co/0jMhbM5/cat2.jpg"
+            image: "https://i.ibb.co/sprxBzD2/c3.jpg"
         },
         {
             name: "Olivia & Bunny",
             feedback: "The adoption process was easy and Bunny is perfect!",
-            image: "https://i.ibb.co/pKdYJ5d/rabbit1.jpg"
+            image: "https://i.ibb.co/cX6Y6S9Q/d2.jpg"
         },
     ];
 
