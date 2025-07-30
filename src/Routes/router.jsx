@@ -26,6 +26,7 @@ import AllDonations from '../components/AdminComponents/AllDonations';
 import ViewDonators from '../components/UserComponents/ViewDonators';
 import PrivateRoute from '../Shared/PrivateRoute/PrivateRoute';
 import ErrorPage from '../Pages/ErrorPage/ErrorPage';
+import AdminRoute from '../Shared/AdminRoute/AdminRoute';
 
 const router = createBrowserRouter([
     {
@@ -66,7 +67,7 @@ const router = createBrowserRouter([
     },
     {
         path: "/userDashboard",
-        Component: UserDashBoardLayout,
+        element: <PrivateRoute><UserDashBoardLayout></UserDashBoardLayout></PrivateRoute>,
         errorElement: <ErrorPage></ErrorPage>,
         children: [
             { index: true, Component: UserDashboardHome },
@@ -83,7 +84,7 @@ const router = createBrowserRouter([
     },
     {
         path: "/adminDashboard",
-        Component: AdminDashboardLayout,
+        element: <AdminRoute><AdminDashboardLayout></AdminDashboardLayout></AdminRoute>,
         errorElement: <ErrorPage></ErrorPage>,
         children: [
             { index: true, Component: AdminDashboardHome },
