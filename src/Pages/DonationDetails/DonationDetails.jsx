@@ -107,7 +107,7 @@ const DonationDetails = () => {
                     </div>
                     <button
                         onClick={handleDonation}
-                        className="bg-[#865B97] text-white px-4 py-2 rounded hover:bg-[#EFCD5C] hover:text-black"
+                        className="bg-[var(--heading-color)] font-semibold cursor-pointer text-white px-4 py-2 rounded hover:bg-[#EFCD5C] hover:text-black"
                     >
                         Donate Now
                     </button>

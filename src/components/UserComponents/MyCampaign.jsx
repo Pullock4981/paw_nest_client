@@ -89,19 +89,19 @@ const MyCampaign = () => {
                                         <td className="p-3 space-x-2 whitespace-nowrap">
                                             <button
                                                 onClick={() => handlePauseToggle(campaign._id, campaign.paused)}
-                                                className={`px-3 py-1 rounded text-white ${campaign.paused ? "bg-yellow-500" : "bg-red-500"}`}
+                                                className={`px-3 py-1 cursor-pointer rounded text-white ${campaign.paused ? "bg-yellow-500" : "bg-red-500"}`}
                                             >
                                                 {campaign.paused ? "Unpause" : "Pause"}
                                             </button>
                                             <button
                                                 onClick={() => handleEdit(campaign._id)}
-                                                className="bg-blue-600 text-white px-3 py-1 rounded"
+                                                className="bg-blue-600 text-white px-3 py-1 cursor-pointer rounded"
                                             >
                                                 Edit
                                             </button>
                                             <button
                                                 onClick={() => handleViewDonators(campaign._id)}
-                                                className="bg-gray-700 text-white px-3 py-1 rounded"
+                                                className="bg-gray-700 cursor-pointer text-white px-3 py-1 rounded"
                                             >
                                                 View Donators
                                             </button>

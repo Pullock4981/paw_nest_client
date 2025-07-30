@@ -119,7 +119,7 @@ const PetDetails = () => {
             <div className="mt-6 text-center">
                 <button
                     onClick={() => setIsModalOpen(true)}
-                    className="bg-green-600 hover:bg-green-700 text-white font-semibold px-6 py-2 rounded disabled:opacity-50 transition"
+                    className="bg-green-600 hover:bg-green-700 cursor-pointer text-white font-semibold px-6 py-2 rounded disabled:opacity-50 transition"
                     disabled={isOwner || hasRequested}
                 >
                     {isOwner ? "You own this pet" : hasRequested ? "Already Requested" : "Adopt"}
@@ -133,7 +133,7 @@ const PetDetails = () => {
                 overlayClassName="fixed inset-0 bg-black bg-opacity-40 z-50 flex justify-center items-start overflow-y-auto"
                 ariaHideApp={false}
             >
-                <h2 className="text-xl font-bold mb-4">Adopt {pet.name}</h2>
+                <h2 className="text-xl text-[var(--heading-color)] font-bold mb-4">Adopt {pet.name}</h2>
                 <form onSubmit={handleSubmit} className="space-y-4">
                     <div>
                         <label className="block mb-1 text-sm">Your Name</label>
@@ -166,7 +166,7 @@ const PetDetails = () => {
                         <button
                             type="submit"
                             disabled={loading}
-                            className="bg-[#865B97] hover:bg-[#EFCD5C] text-white hover:text-black font-semibold px-4 py-2 rounded transition"
+                            className="bg-[#865B97] hover:bg-[#EFCD5C] text-white hover:text-black cursor-pointer font-semibold px-4 py-2 rounded transition"
                         >
                             {loading ? "Submitting..." : "Submit Request"}
                         </button>

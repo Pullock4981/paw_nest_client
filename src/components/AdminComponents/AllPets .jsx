@@ -92,19 +92,19 @@ const AllPets = () => {
                             <td className="p-3 flex gap-2 flex-wrap">
                                 <button
                                     onClick={() => handleStatusToggle(pet._id, pet.adopted)}
-                                    className="bg-blue-500 hover:bg-blue-600 text-white text-sm px-3 py-1 rounded"
+                                    className="bg-blue-500 hover:bg-blue-600 cursor-pointer text-white text-sm px-3 py-1 rounded"
                                 >
                                     {pet.adopted ? 'Mark Not Adopted' : 'Mark Adopted'}
                                 </button>
                                 <button
                                     onClick={() => handleUpdate(pet._id)}
-                                    className="bg-purple-500 hover:bg-purple-600 text-white text-sm px-3 py-1 rounded"
+                                    className="bg-purple-500 hover:bg-purple-600 cursor-pointer text-white text-sm px-3 py-1 rounded"
                                 >
                                     Update
                                 </button>
                                 <button
                                     onClick={() => handleDelete(pet._id)}
-                                    className="bg-red-500 hover:bg-red-600 text-white text-sm px-3 py-1 rounded"
+                                    className="bg-red-500 hover:bg-red-600 cursor-pointer text-white text-sm px-3 py-1 rounded"
                                 >
                                     Delete
                                 </button>

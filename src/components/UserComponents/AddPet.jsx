@@ -203,7 +203,7 @@ const AddPet = () => {
                             <motion.button
                                 whileHover={{ scale: 1.05 }}
                                 type="submit"
-                                className="bg-[#865B97] text-white px-6 py-2 rounded shadow"
+                                className="bg-[var(--heading-color)] text-white px-6 py-2 cursor-pointer rounded shadow"
                             >
                                 Submit Pet
                             </motion.button>

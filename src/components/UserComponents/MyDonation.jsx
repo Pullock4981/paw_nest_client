@@ -79,7 +79,7 @@ const MyDonation = () => {
                                 <td className="p-3">
                                     <button
                                         onClick={() => handleRefund(donation._id)}
-                                        className="bg-red-600 text-white px-3 py-1 rounded"
+                                        className="bg-red-600 cursor-pointer text-white px-3 py-1 rounded"
                                     >
                                         Ask for Refund
                                     </button>

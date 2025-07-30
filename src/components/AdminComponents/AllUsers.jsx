@@ -93,7 +93,7 @@ const AllUsers = () => {
                                 {user.role !== "admin" && (
                                     <button
                                         onClick={() => handleMakeAdmin(user.email)}
-                                        className="px-3 py-1 text-sm bg-green-500 hover:bg-green-600 text-white rounded"
+                                        className="px-3 py-1 cursor-pointer text-sm bg-green-500 hover:bg-green-600 text-white rounded"
                                     >
                                         Make Admin
                                     </button>
@@ -101,12 +101,12 @@ const AllUsers = () => {
                                 {!user.banned ? (
                                     <button
                                         onClick={() => handleBanUser(user.email)}
-                                        className="px-3 py-1 text-sm bg-red-500 hover:bg-red-600 text-white rounded"
+                                        className="px-3 py-1 cursor-pointer text-sm bg-red-500 hover:bg-red-600 text-white rounded"
                                     >
                                         Ban User
                                     </button>
                                 ) : (
-                                    <span className="text-xs text-red-600 font-semibold">Banned</span>
+                                    <span className="text-xs cursor-pointer text-red-600 font-semibold">Banned</span>
                                 )}
                             </td>
                         </tr>

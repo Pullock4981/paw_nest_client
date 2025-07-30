@@ -24,7 +24,7 @@ const CallToAction = () => {
                         Join us in changing lives — one paw at a time.
                     </p>
                     <Link to="/petList">
-                        <button className="bg-[#865B97] text-white px-6 py-3 rounded-md font-semibold hover:bg-[#EFCD5C] hover:text-black transition-colors duration-300">
+                        <button className="bg-[var(--heading-color)] cursor-pointer text-white px-6 py-3 rounded-md font-semibold hover:bg-[#EFCD5C] hover:text-black transition-colors duration-300">
                             Browse Pets for Adoption
                         </button>
                     </Link>

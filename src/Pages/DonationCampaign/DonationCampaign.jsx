@@ -101,7 +101,7 @@ const DonationCampaign = () => {
 
                             <button
                                 onClick={() => navigate(`/donationDetails/${campaign._id}`)}
-                                className="bg-[#865B97] text-white px-4 py-2 hover:bg-[#EFCD5C] hover:text-black rounded-lg transition"
+                                className="bg-[var(--heading-color)] text-white px-4 py-2 cursor-pointer font-semibold hover:bg-[#EFCD5C] hover:text-black rounded-lg transition"
                             >
                                 View Details
                             </button>

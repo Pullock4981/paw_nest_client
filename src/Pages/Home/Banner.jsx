@@ -22,7 +22,7 @@ const Banner = () => {
                             Join us in giving pets a second chance at life. Adopt, donate, and make a difference today!
                         </p>
                         <Link to='/petList'>
-                            <button className="inline-block bg-[#865B97] text-white px-6 py-3 rounded shadow hover:bg-[#EFCD5C] hover:text-black transition">
+                            <button className="inline-block cursor-pointer bg-[var(--heading-color)] font-semibold text-white px-6 py-3 rounded shadow hover:bg-[#EFCD5C] hover:text-black transition">
                                 Explore Pets
                             </button>
                         
@@ -39,7 +39,7 @@ const Banner = () => {
                         <img
                             src="https://i.ibb.co/HTJgTNQY/gp1.webp"
                             alt="Adopt Banner"
-                            className="w-full rounded-lg shadow-lg"
+                            className="w-full rounded-lg shadow-lg shadow-amber-200"
                         />
                     </motion.div>
                 </div>

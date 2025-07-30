@@ -92,19 +92,19 @@ const AllDonations = () => {
                             <td className="p-3 flex gap-2 flex-wrap items-center justify-center">
                                 <button
                                     onClick={() => handlePauseToggle(donation._id, donation.paused)}
-                                    className="bg-yellow-500 hover:bg-yellow-600 text-white text-sm px-3 py-1 rounded"
+                                    className="bg-yellow-500 hover:bg-yellow-600 cursor-pointer text-white text-sm px-3 py-1 rounded"
                                 >
                                     {donation.paused ? 'Unpause' : 'Pause'}
                                 </button>
                                 <button
                                     onClick={() => handleEdit(donation._id)}
-                                    className="bg-blue-500 hover:bg-blue-600 text-white text-sm px-3 py-1 rounded"
+                                    className="bg-blue-500 hover:bg-blue-600 cursor-pointer text-white text-sm px-3 py-1 rounded"
                                 >
                                     Edit
                                 </button>
                                 <button
                                     onClick={() => handleDelete(donation._id)}
-                                    className="bg-red-500 hover:bg-red-600 text-white text-sm px-3 py-1 rounded"
+                                    className="bg-red-500 hover:bg-red-600 text-white cursor-pointer text-sm px-3 py-1 rounded"
                                 >
                                     Delete
                                 </button>

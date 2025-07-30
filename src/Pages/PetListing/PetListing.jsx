@@ -105,7 +105,7 @@ const PetListing = () => {
                             </div>
                             <button
                                 onClick={() => navigate(`/petDetails/${pet._id}`)}
-                                className="bg-[#865B97] text-white px-4 py-2 hover:bg-[#EFCD5C] hover:text-black rounded-lg transition"
+                                className="bg-[var(--heading-color)] cursor-pointer text-white font-semibold px-4 py-2 hover:bg-[#EFCD5C] hover:text-black rounded-lg transition"
                             >
                                 View Details
                             </button>

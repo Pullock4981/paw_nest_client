@@ -117,20 +117,20 @@ const MyAddedPet = () => {
                             onClick={() =>
                                 navigate(`/userDashboard/updatePet/${row.original._id}`)
                             }
-                            className="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600"
+                            className="px-3 py-1 cursor-pointer bg-blue-500 text-white rounded hover:bg-blue-600"
                         >
                             Update
                         </button>
                         <button
                             onClick={() => handleDelete(row.original._id)}
-                            className="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600"
+                            className="px-3 py-1 cursor-pointer bg-red-500 text-white rounded hover:bg-red-600"
                         >
                             Delete
                         </button>
                         <button
                             onClick={() => handleAdopt(row.original._id)}
                             disabled={row.original.adopted}
-                            className={`px-3 py-1 text-white rounded transition ${row.original.adopted
+                            className={`px-3 py-1 cursor-pointer text-white rounded transition ${row.original.adopted
                                 ? "bg-gray-400 cursor-not-allowed"
                                 : "bg-green-500 hover:bg-green-600"
                                 }`}
