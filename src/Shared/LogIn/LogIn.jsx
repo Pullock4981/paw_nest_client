@@ -1,6 +1,7 @@
 import { useContext } from "react";
 import { Link, useLocation, useNavigate } from "react-router";
 import { AuthContext } from "../../Context/AuthContext";
+import GitHubLoginButton from "./GitHubLoginButton";
 
 
 const LogIn = () => {
@@ -55,7 +56,7 @@ const LogIn = () => {
     };
 
     return (
-        <div className="flex justify-center items-center py-10 bg-[#f7f7f7] px-4">
+        <div className="flex justify-center items-center py-10 px-4">
             <div className="card bg-base-100 w-full max-w-sm shadow-xl">
                 <div className="card-body">
                     <h1 className="text-3xl font-bold text-center mb-6">Login Now</h1>
@@ -103,6 +104,7 @@ const LogIn = () => {
                         </svg>
                         <span className="ml-2">Login with Google</span>
                     </button>
+                    <GitHubLoginButton></GitHubLoginButton>
                 </div>
             </div>
         </div>
