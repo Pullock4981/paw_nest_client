@@ -113,7 +113,7 @@ const PetDetails = () => {
                 <p><strong>Age:</strong> {pet.age}</p>
                 <p><strong>Category:</strong> {pet.category}</p>
                 <p><strong>Location:</strong> {pet.location}</p>
-                <p><strong>Description:</strong> {pet.description}</p>
+                <p><strong>Description:</strong> {pet.longDescription}</p>
             </div>
 
             <div className="mt-6 text-center">
