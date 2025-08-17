@@ -1,5 +1,6 @@
 import React from 'react';
 import ProfilePage from '../../Shared/ProfilePage/ProfilePage';
+import DashboardOverview from '../../Shared/DashboardOverview/DashboardOverview';
 
 const AdminDashboardHome = () => {
     return (
@@ -11,6 +12,7 @@ const AdminDashboardHome = () => {
                 You have full access to manage users, pets, donations, and more. Use the sidebar or menu to navigate the dashboard.
             </p>
             <ProfilePage></ProfilePage>
+            <DashboardOverview></DashboardOverview>
         </div>
     );
 };
