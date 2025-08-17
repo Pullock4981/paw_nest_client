@@ -1,22 +1,31 @@
-import React from 'react';
-import Banner from './Banner';
-import PetCategories from './PetCategories';
-import CallToAction from './CallToAction';
-import AboutUs from './AboutUs';
-import Testimonials from './Testimonials';
-import HowItWorks from './HowItWorks';
-import FeaturedPets from './FeaturedPets';
-import RecentPets from './RecentPets';
-import AdoptionStories from './AdoptionStories';
-import Newsletter from './Newsletter';
-import Footer from '../../components/Footer/Footer';
+// import React from 'react';
+// import Banner from './Banner';
+// import PetCategories from './PetCategories';
+// import CallToAction from './CallToAction';
+// import AboutUs from './AboutUs';
+// import Testimonials from './Testimonials';
+// import HowItWorks from './HowItWorks';
+// import FeaturedPets from './FeaturedPets';
+// import RecentPets from './RecentPets';
+// import AdoptionStories from './AdoptionStories';
+// import Newsletter from './Newsletter';
+// import Footer from '../../components/Footer/Footer';
+
+import AboutUs from "./AboutUs";
+import Banner from "./Banner";
+import CallToAction from "./CallToAction";
+import FeaturedPets from "./FeaturedPets";
+import HowItWorks from "./HowItWorks";
+import Newsletter from "./Newsletter";
+import PetCategories from "./PetCategories";
+import RecentPets from "./RecentPets";
+import Testimonials from "./Testimonials";
 
 const Home = () => {
     return (
         <div>
             {/* Hero Section */}
-            <Banner />
-
+            <Banner></Banner>
             {/* Category Highlights */}
             <PetCategories />
 
@@ -33,7 +42,7 @@ const Home = () => {
             <AboutUs />
 
             {/* Success / Adoption Stories */}
-            <AdoptionStories />
+            {/* <AdoptionStories /> */}
 
             {/* Testimonials / Reviews */}
             <Testimonials />
@@ -45,7 +54,7 @@ const Home = () => {
             <Newsletter />
 
             {/* Footer */}
-            <Footer />
+            {/* <Footer /> */}
         </div>
     );
 };
