@@ -1,10 +1,11 @@
 import React from "react";
+import { Link } from "react-router";
 
 const RecentPets = () => {
     const recent = [
-        { id: 1, name: "Bulldog", img: "/pets/dog2.jpg", desc: "Strong and calm companion." },
-        { id: 2, name: "Persian Cat", img: "/pets/cat2.jpg", desc: "Fluffy and affectionate." },
-        { id: 3, name: "Rabbit", img: "/pets/rabbit.jpg", desc: "Cute and cuddly friend." },
+        { id: 1, name: "Bulldog", img: "https://i.ibb.co/cX6Y6S9Q/d2.jpg", desc: "Strong and calm companion." },
+        { id: 2, name: "Persian Cat", img: "https://i.ibb.co/sprxBzD2/c3.jpg", desc: "Fluffy and affectionate." },
+        { id: 3, name: "Rabbit", img: "https://i.ibb.co/MDkmv8zt/r1.jpg", desc: "Cute and cuddly friend." },
     ];
 
     return (
@@ -17,9 +18,11 @@ const RecentPets = () => {
                         <div className="p-4">
                             <h3 className="text-lg font-semibold">{pet.name}</h3>
                             <p className="text-sm text-gray-600">{pet.desc}</p>
-                            <button className="btn btn-sm mt-3 bg-[#865B97] text-white hover:bg-[#EFCD5C]">
-                                See More
-                            </button>
+                            <Link to='/petList'>
+                                <button className="btn btn-sm mt-3 bg-[#865B97] text-white hover:bg-[#EFCD5C]">
+                                    See More
+                                </button>
+                            </Link>
                         </div>
                     </div>
                 ))}
