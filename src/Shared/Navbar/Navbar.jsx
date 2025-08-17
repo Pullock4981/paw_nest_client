@@ -1,5 +1,4 @@
-
-import { useContext, useEffect, useRef, useState } from 'react';
+import { useContext, useState } from 'react';
 import './Navbar.css';
 import { AuthContext } from '../../Context/AuthContext';
 import { Link, NavLink } from 'react-router';
@@ -7,19 +6,7 @@ import Logo from '../../components/Logo/Logo';
 
 const Navbar = () => {
     const { user, SignOutUser, role } = useContext(AuthContext);
-    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const [theme, setTheme] = useState("light");
-    const dropdownRef = useRef();
-
-    useEffect(() => {
-        const handleClickOutside = (event) => {
-            if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-                setIsDropdownOpen(false);
-            }
-        };
-        document.addEventListener("mousedown", handleClickOutside);
-        return () => document.removeEventListener("mousedown", handleClickOutside);
-    }, []);
 
     const handleSignOut = () => {
         SignOutUser().catch((error) => {
@@ -39,6 +26,15 @@ const Navbar = () => {
             <li><NavLink to="/">Home</NavLink></li>
             <li><NavLink to="/petList">Pet Listing</NavLink></li>
             <li><NavLink to="/donationCampain">Donation Campaigns</NavLink></li>
+            {user && (
+                <li>
+                    <NavLink
+                        to={role === "admin" ? "/adminDashboard" : "/userDashboard"}
+                    >
+                        Dashboard
+                    </NavLink>
+                </li>
+            )}
         </>
     );
 
@@ -73,54 +69,29 @@ const Navbar = () => {
             {/* Right Section */}
             <div className="navbar-end gap-3">
                 {user ? (
-                    <div className="relative flex items-center gap-3" ref={dropdownRef}>
+                    <div className="flex items-center gap-3">
                         <img
                             src={user.photoURL}
                             alt="User"
-                            className="w-8 h-8 rounded-full border cursor-pointer"
-                            onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                            className="w-8 h-8 rounded-full border"
                         />
-                        {isDropdownOpen && (
-                            <div className="absolute right-0 top-12 bg-base-100 shadow-md rounded w-40 z-50">
-                                <ul className="text-sm">
-                                    <li>
-                                        <Link
-                                            to={
-                                                role === "admin"
-                                                    ? "/adminDashboard"
-                                                    : role === "user"
-                                                        ? "/userDashboard"
-                                                        : "/"
-                                            }
-                                            className="block px-4 py-2 hover:bg-base-200"
-                                            onClick={() => setIsDropdownOpen(false)}
-                                        >
-                                            {role ? "Dashboard" : "Loading..."}
-                                        </Link>
-                                    </li>
-                                    <li>
-                                        <button
-                                            onClick={handleSignOut}
-                                            className="w-full text-left px-4 py-2 hover:bg-base-200"
-                                        >
-                                            Logout
-                                        </button>
-                                    </li>
-                                </ul>
-                            </div>
-                        )}
+                        <button
+                            onClick={handleSignOut}
+                            className="btn btn-outline bg-[#865B97] text-white btn-sm"
+                        >
+                            Logout
+                        </button>
                     </div>
                 ) : (
                     <Link to='/login'>
-                        <button className="btn btn-outline bg-[#EFCD5C] hover:bg-[#865B97] hover:text-white btn-sm">
+                        <button className="btn btn-outline bg-[#EFCD5C] hover:bg-[] hover:text-white btn-sm">
                             Login
                         </button>
                     </Link>
                 )}
 
                 {/* 🌙 Theme toggle */}
-
-                <label className="swap swap-rotate ml-3 md:p-2 p-1 rounded-full bg-primary text-white hover:bg-primary-focus cursor-pointer transition duration-200">
+                <label className="swap swap-rotate ml-3 md:p-2 p-1 rounded-full text-[var(--heading-color)] hover:bg-primary-focus cursor-pointer transition duration-200">
                     <input
                         type="checkbox"
                         onChange={toggleTheme}
