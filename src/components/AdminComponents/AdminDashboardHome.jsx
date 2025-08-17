@@ -1,4 +1,5 @@
 import React from 'react';
+import ProfilePage from '../../Shared/ProfilePage/ProfilePage';
 
 const AdminDashboardHome = () => {
     return (
@@ -9,6 +10,7 @@ const AdminDashboardHome = () => {
             <p className="text-lg">
                 You have full access to manage users, pets, donations, and more. Use the sidebar or menu to navigate the dashboard.
             </p>
+            <ProfilePage></ProfilePage>
         </div>
     );
 };
